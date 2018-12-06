@@ -11,7 +11,7 @@ Instantiate the Notify class with notify = new Notify({params}) and off you go. 
 	
 	notifyType	default: 'card'		values: ('card', 'block')
 	hPosition	default: 'left'		values:	('left', 'right')
-	vPosition	default: 'top'		vlues:	('top', 'bottom')
+	vPosition	default: 'top'		values:	('top', 'bottom')
 	insertPosition	default: 'first'	values:	('first', 'last')
 	hMargin		default: 10		values:	(min: 10, max: 20)
 	vMargin		default: 10		values:	(min: 10, max: 20)
