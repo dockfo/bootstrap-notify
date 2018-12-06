@@ -3,7 +3,7 @@ Simple library written in plain vanilla JavaScript.
 
 How to use.
 
-Instantiate the Notify class with notify = new Notify(params) and off you go. To display notifications call the method notify.show(params). You can provide custom params to the class which are :
+Instantiate the Notify class with notify = new Notify({params}) and off you go. To display notifications call the method notify.show(). You can provide custom params to the class which are :
 	
 	notifyType (values : string) display notifications as card or as block
 	hPosition (values : string) display notification on the left or right side of the document body
