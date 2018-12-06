@@ -41,4 +41,8 @@ Instantiate the Notify class with notify = new Notify({params}) and off you go. 
 	hideDuration	- hide transition duration in mscec
 	notifyTheme	- name of the theme
 					  
-Example notify = new Notify({})
+Example notify = new Notify({ 	notifyHeight : 'auto',
+				hideDuration : 1500,
+				autoHideTime : 2000,
+				hPosition : 'left',
+				vPosition : 'top'});
