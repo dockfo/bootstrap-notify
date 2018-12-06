@@ -34,10 +34,10 @@ Instantiate the Notify class with notify = new Notify() and off you go. To displ
 	vMargin		- distance in pixels from the top or bottom margin of the document body
 	notifyHeight	- true for auto height or height in pixels
 	notifySpacing	- vertical spacing in pixels between notification
-	autoHide	- true for autohide or false for manually close the notification
-	autoHideInd	- true display, as progressive bar, the time remaining for closing the notification
+	autoHide	- autohide or manually close the notification
+	autoHideInd	- display, as progressive bar, the time remaining for closing the notification
 	autoHideTime	- display duration in msec
-	hideOnClick	- true hide notification on click   
+	hideOnClick	- hide notification on click   
 	showTransition	- name of the show transition 
 	showDuration	- show transition duration in mscec
 	hideTransition	- name of the hide transition
