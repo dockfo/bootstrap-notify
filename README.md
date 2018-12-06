@@ -7,7 +7,7 @@ Simple class written in plain vanilla JavaScript.
 
 How to use.
 
-Instantiate the Notify class with notify = new Notify() and off you go. To display notifications call the method notify.show(). You can also override default params which are :
+Instantiate the Notify class with notify = new Notify() and off you go. To display notifications call the method notify.show(). You can also override default parameters which are :
 	
 	notifyType	default: 'card'		values: ('card', 'block')
 	hPosition	default: 'left'		values:	('left', 'right')
