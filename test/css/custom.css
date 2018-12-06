@@ -2,6 +2,14 @@
 body{	background:rgba(0,0,0,0.2);
 		padding:20px;}
 
-.mycanvas{width:60rem;
-					height:30rem;
-					background:lightblue;}
+.turnleftup{transform:rotate(45deg);}
+
+.turnrightup{transform:rotate(-45deg);}
+
+.largeicon{	color:rgba(255,255,255,0.3);
+						position:relative;
+						top:-28px;
+						left:-20px;
+						font-size:10rem;}
+
+
