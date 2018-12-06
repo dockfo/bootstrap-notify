@@ -30,7 +30,7 @@ Instantiate the Notify class with notify = new Notify() and off you go. To displ
 	hPosition	- display notification on the left or right side of the document body
 	vPosition	- display notification at the top or at the bottom of the document body
 	insertPosition	- display new notifications first or last
-	hMargin		- distance in pixels from the top or bottom margin of the document body
+	hMargin		- distance in pixels from the left or right margin of the document body
 	vMargin		- distance in pixels from the top or bottom margin of the document body
 	notifyHeight	- true for auto height or height in pixels
 	notifySpacing	- vertical spacing in pixels between notification
