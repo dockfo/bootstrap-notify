@@ -15,8 +15,8 @@
 	hMargin	(values : integer) distance in pixels from the top or bottom margin of the document body
 	vMargin (values : integer) distance in pixels from the top or bottom margin of the document body
         notifyHeight (values : true or integer) true for auto height or height in pixels
-	notifySpacing (values : integer)	vertical spacing in pixels between notification
-	autoHide (values : boolean)	true to autohide or false to manually close the notification
+	notifySpacing (values : integer) vertical spacing in pixels between notification
+	autoHide (values : boolean) true to autohide or false to manually close the notification
 	autoHideTimeIndicator (values : boolean) true display time remaining for closing the notification
         autoHideTime (values : integer) display duration in msec
 	hideOnClick (values : boolean) true hide notification on click   
