@@ -54,7 +54,7 @@ Example:
 For the show() method you have to pass 2 parameters : 'message', 'notifyType', and (optionally) 'theme' 
 
 	message		- your message to display
-	notifyType	- type of notification ('primary', 'success', 'info', 'warning', 'danger')
+	notifyType	- type of the notification ('primary', 'success', 'info', 'warning', 'danger')
 	theme		- theme ('default')
 
 example:
