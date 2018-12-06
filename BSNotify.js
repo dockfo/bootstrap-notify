@@ -35,7 +35,7 @@
           this.pushDownClass = 'pushdown';
           this.pushDownDuration = 100;
     // user defined values on instantiating the Notify class
-        if(params !== null && typeof(params) === "object"){       // checking the validity of user provided values  ...
+        if(params !== null && typeof(params) === "object"){       // check for validity of user values provided ...
           let _this = this;
           let userParams = this.checkUserOverrides(params);
           Object.keys(userParams).forEach(function(param){
@@ -80,19 +80,39 @@
       this.userOverrides = function(param, data = null){
         switch(param){
           case 'showClass' :
-              return ('notify-show-' + this.showTransition);
+              if(this.notifyType === 'card'){
+                return ('notify-show-' + this.showTransition);
+              }else if(this.notifyType === 'block'){
+                return ('notify-block-show-' + this.showTransition);
+              }
           case 'hideClass' :
-              return ('notify-hide-' + this.hideTransition);
+              if(this.notifyType === 'card'){
+                return ('notify-hide-' + this.hideTransition);
+              }else if(this.notifyType === 'block'){
+                return ('notify-block-hide-' + this.hideTransition);
+              }
           case 'pushDownClass' :
               return (this.pushDownClass);
           case 'showAnimation' :
-              return (this.showTransition + "-" + this.hPosition + ' ' + this.showDuration + 'ms linear both');
+              if(this.notifyType === 'card'){
+                return (this.showTransition + "-" + this.hPosition + ' ' + this.showDuration + 'ms linear both');
+              }else if(this.notifyType === 'block'){
+                return (this.showTransition + "-" + this.vPosition + ' ' + this.showDuration + 'ms linear both');
+              }
           case 'hideAnimation' :
-              return (this.hideTransition + "-" + this.hPosition + ' ' + this.hideDuration + 'ms linear both');
+              if(this.notifyType === 'card'){
+                return (this.hideTransition + "-" + this.hPosition + ' ' + this.hideDuration + 'ms linear both');
+              }else if(this.notifyType === 'block'){
+                return (this.hideTransition + "-" + this.vPosition + ' ' + this.hideDuration + 'ms linear both');
+              }
           case 'pushDownAnimation' :
               return (this.pushDownClass + ' ' + this.pushDownDuration + 'ms linear both');
           case 'notifyClass' :
-              return ('notify-' + this.checkNotifyType(data));
+              if(this.notifyType === 'card'){
+                return ('notify-' + this.checkNotifyType(data));
+              }else if(this.notifyType === 'block'){
+                return ('notify-block-' + this.checkNotifyType(data));
+              }
           case 'notifySpacing' :
               if(this.vPosition === 'top'){
                 return ('0 0 ' + this.notifySpacing + 'px 0');
@@ -100,10 +120,14 @@
                 return (this.notifySpacing + 'px 0 0 0');
               }
           case 'notifyHeight' :
-              if(this.notifyHeight === 'auto'){
-                return ('auto');
-              }else if(typeof(this.notifyHeight) === 'number'){
-                return (this.notifyHeight + 'px');
+              if(this.notifyType === 'card'){
+                if(this.notifyHeight === 'auto'){
+                  return ('auto');
+                }else if(typeof(this.notifyHeight) === 'number'){
+                  return (this.notifyHeight + 'px');
+                }
+              }else if(this.notifyType === 'block'){
+                return ('60px');
               }
             break;
           default:
@@ -123,6 +147,16 @@
         }
       };
 
+      this.createContainerBlock = function(){                                                                      // create container for the notification divs
+        if(!(document.getElementById('notifycontainer-' + this.vPosition))){
+          let container = document.createElement('div');
+          container.setAttribute('id', 'notifycontainer-' + this.vPosition);
+          container.classList.add('notifycontainer-block');
+          container.style[this.vPosition] = '0px';
+          document.body.insertBefore(container, document.body.childNodes[0]);
+        }
+      };
+
       this.checkNotifyType = function(type){
           let notify = ['primary', 'success', 'info', 'warning', 'danger'];
           if(notify.includes(type)){
@@ -133,8 +167,14 @@
           }
       };
 
-      this.formatMessage = function(message, type = 'danger', theme = 'default'){       // creating the message displayed inside notification div depending on notification type (primary, warning, danger etc.)
+      this.formatMessage = function(_message, type = 'danger', theme = 'default'){       // creating the message displayed inside notification div depending on notification type (primary, warning, danger etc.)
         let icon;
+        let iconNotifyType;
+        if(this.notifyType === 'card'){
+          iconNotifyType = 'icon-card';
+        }else if(this.notifyType === 'block'){
+          iconNotifyType = 'icon-block';
+        }
         switch(type){
           case 'primary':
               icon = 'glyphicon glyphicon-plus-sign';
@@ -154,9 +194,9 @@
 
         }
 
-        let html = '<div class="container">'
+        let html = '<div class="container-fluid">'
                  +    '<div class="row">'
-                 +       '<i class="' + icon + ' largeicon"></i>'
+                 +       '<i class="' + icon + ' ' + iconNotifyType +'"></i>'
                  +      '<div class="col-sm-10">This is a \"' + this.vPosition + ' ' + this.hPosition + '\" notify with Bootstrap type : \"' + type + '\" and \"' + theme + '\" theme.</div>'
                  +      '</div>'
                  +    '</div>'
@@ -174,23 +214,89 @@
 
     show(message, type = 'danger',  theme = 'default'){
 
-      // initialize vars
-          this.createContainer();
-          let _this = this;
-          let txtMessage = this.formatMessage(message, type, theme);
-          let showClass = this.userOverrides('showClass');
-          let showAnimation = this.userOverrides('showAnimation');
-          let hideClass = this.userOverrides('hideClass');
-          let hideAnimation = this.userOverrides('hideAnimation');
-          let notifyClass = this.userOverrides('notifyClass', type, theme);
-          let notifySpacing = this.userOverrides('notifySpacing');
-          let notifyHeight = this.userOverrides('notifyHeight');
-          let pushDownClass = this.userOverrides('pushDownClass');
-          let pushDownAnimation = this.userOverrides('pushDownAnimation');
-          let container = document.getElementById('notifycontainer-' + this.vPosition + this.hPosition);
-          let notify = document.createElement('div');
+          if(this.notifyType === 'card'){
+            // initialize vars
+                this.createContainer();
+                let _this = this;
+                let txtMessage = this.formatMessage(message, type, theme);
+                let showClass = this.userOverrides('showClass');
+                let showAnimation = this.userOverrides('showAnimation');
+                let hideClass = this.userOverrides('hideClass');
+                let hideAnimation = this.userOverrides('hideAnimation');
+                let notifyClass = this.userOverrides('notifyClass', type, theme);
+                let notifySpacing = this.userOverrides('notifySpacing');
+                let notifyHeight = this.userOverrides('notifyHeight');
+                let pushDownClass = this.userOverrides('pushDownClass');
+                let pushDownAnimation = this.userOverrides('pushDownAnimation');
+                let container = document.getElementById('notifycontainer-' + this.vPosition + this.hPosition);
+                let notify = document.createElement('div');
 
-      // display notification
+            // display notification
+                  if(container.hasChildNodes()){                                        // add pushDown class to first notification
+                      notify.classList.add(pushDownClass);
+                      notify.style.animation = pushDownAnimation;
+                      setTimeout(function(){
+                        notify.classList.remove(pushDownClass);
+                        notify.classList.add(notifyClass, showClass);
+                        notify.style.animation = showAnimation;
+                        notify.style.margin = notifySpacing;
+                        notify.style.height = notifyHeight;
+                        notify.innerHTML = txtMessage;
+                      }, this.pushDownDuration)
+                  }else{
+                      notify.classList.add(notifyClass, showClass);                     // first notification without pushDown class
+                      notify.style.animation = showAnimation;
+                      notify.style.margin = notifySpacing;
+                      notify.style.height = notifyHeight;
+                      notify.innerHTML = txtMessage;
+                  }
+                  if(this.vPosition === 'top'){
+                    if(this.insertPosition === 'first'){
+                      container.insertBefore(notify, container.childNodes[0]);          // display every new notification in first position
+                    }else{
+                      container.appendChild(notify);
+                    }
+                  }else if(this.vPosition === 'bottom'){
+                    if(this.insertPosition === 'first'){
+                      container.appendChild(notify);
+                    }else{
+                      container.insertBefore(notify, container.childNodes[0]);
+                    }
+                  }
+
+                  setTimeout(function(){
+                    notify.classList.remove(showClass);
+                  }, this.showDuration);
+
+                  setTimeout(function(){
+                    setTimeout(function(){
+                      notify.classList.add(hideClass);
+                      notify.style.animation = hideAnimation;
+                      setTimeout(function(){
+                        notify.parentNode.removeChild(notify);
+                        if(!container.hasChildNodes()){
+                          document.body.removeChild(container);
+                        }
+                      }, _this.hideDuration);
+                    }, _this.showDuration);
+                  }, this.autoHideTime + this.showDuration + this.hideDuration);
+          }else if(this.notifyType === 'block'){
+            this.createContainerBlock();
+            //let _this = this;
+            let txtMessage = this.formatMessage(message, type, theme);
+
+            let showClass = this.userOverrides('showClass');
+            let showAnimation = this.userOverrides('showAnimation');
+            let hideClass = this.userOverrides('hideClass');
+            let hideAnimation = this.userOverrides('hideAnimation');
+            let notifyClass = this.userOverrides('notifyClass', type, theme);
+            let notifySpacing = this.userOverrides('notifySpacing');
+            let notifyHeight = this.userOverrides('notifyHeight');
+            let pushDownClass = this.userOverrides('pushDownClass');
+            let pushDownAnimation = this.userOverrides('pushDownAnimation');
+            let container = document.getElementById('notifycontainer-' + this.vPosition);
+            let notify = document.createElement('div');
+
             if(container.hasChildNodes()){                                        // add pushDown class to first notification
                 notify.classList.add(pushDownClass);
                 notify.style.animation = pushDownAnimation;
@@ -209,36 +315,11 @@
                 notify.style.height = notifyHeight;
                 notify.innerHTML = txtMessage;
             }
-            if(this.vPosition === 'top'){
-              if(this.insertPosition === 'first'){
-                container.insertBefore(notify, container.childNodes[0]);          // display every new notification in first position
-              }else{
-                container.appendChild(notify);
-              }
-            }else if(this.vPosition === 'bottom'){
-              if(this.insertPosition === 'last'){
-                container.appendChild(notify);
-              }else{
-                container.insertBefore(notify, container.childNodes[0]);
-              }
-            }
+            container.appendChild(notify);
 
-            setTimeout(function(){
-              notify.classList.remove(showClass);
-            }, this.showDuration);
 
-            setTimeout(function(){
-              setTimeout(function(){
-                notify.classList.add(hideClass);
-                notify.style.animation = hideAnimation;
-                setTimeout(function(){
-                  notify.parentNode.removeChild(notify);
-                  if(!container.hasChildNodes()){
-                    document.body.removeChild(container);
-                  }
-                }, _this.hideDuration);
-              }, _this.showDuration);
-            }, this.autoHideTime + this.showDuration + this.hideDuration);
+          }
+
     }
     //end class
   }
