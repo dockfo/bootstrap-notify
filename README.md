@@ -27,7 +27,7 @@ Instantiate the Notify class with notify = new Notify() and off you go. To displ
 	hideDuration	default: 800		values:	(min: 400,  max: 1500)
 	
 	notifyType	- notification type
-	hPosition	- display notification on the left or right side of the document body
+	hPosition	- display notification on the left or on the right side of the document body
 	vPosition	- display notification at the top or at the bottom of the document body
 	insertPosition	- display new notifications first or last
 	hMargin		- distance in pixels from the left or right margin of the document body
