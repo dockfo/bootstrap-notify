@@ -1,5 +1,5 @@
 # boot-strap-notify
-Simple library written in plain vanilla JavaScript.
+Simple class written in plain vanilla JavaScript.
 
 How to use.
 
