@@ -52,7 +52,9 @@ For the show() method you have to pass 2 parameters message, notifyType, and the
 	message		- your message to display
 	notifyType	- type of notification ('primary', 'success', 'info', 'warning', 'danger')
 	themeoptionally	- theme ('default')
+
 example:
+
 	notify.show('your message', 'warning')
 	
 	
