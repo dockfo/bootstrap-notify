@@ -45,7 +45,7 @@ Instantiate the Notify class with notify = new Notify() and off you go. To displ
 					  
 example:
 
-	notify = new Notify({ 	notifyHeight : 'auto',
+	notify = new Notify({	notifyHeight : 'auto',
 				hideDuration : 1500,
 				autoHideTime : 2000,
 				hPosition : 'left',
