@@ -1,4 +1,8 @@
 # boot-strap-notify
+
+...stil under construction do not use...
+
+
 Simple class written in plain vanilla JavaScript.
 
 How to use.
