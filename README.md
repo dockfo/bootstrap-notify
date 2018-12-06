@@ -51,7 +51,7 @@ Example:
 				hPosition : 'left',
 				vPosition : 'top'});
 
-For the show() method you have to pass 2 parameters message, notifyType, and theme
+For the show() method you have to pass 2 parameters : 'message', 'notifyType', and (optionally) 'theme' 
 
 	message		- your message to display
 	notifyType	- type of notification ('primary', 'success', 'info', 'warning', 'danger')
