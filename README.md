@@ -8,8 +8,8 @@
 	
 	You can provide custom params to the class which are :
 	
-	notifyType	(values : string) display notifications as card or as block
-	hPosition	(values : string) display notification on the left or right side of the document body
+	notifyType (values : string) display notifications as card or as block
+	hPosition (values : string) display notification on the left or right side of the document body
 	vPosition (values : string) display notification at the top or at the bottom of the document body
 	insertPosition (values : string) display new notifications first or last
 	hMargin	(values : integer) distance in pixels from the top or bottom margin of the document body
