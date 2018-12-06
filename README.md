@@ -21,7 +21,6 @@ Instantiate the Notify class with notify = new Notify({params}) and off you go. 
 	showDuration	default: 800		values:	(min: 400,  max: 1500)
 	hideTransition	default: 'rocket'	values:	('rocket', 'slide')
 	hideDuration	default: 800		values:	(min: 400,  max: 1500)
-	notifyTheme	default: 'default'	values:	('default')
 	
 	notifyType	- notification type
 	hPosition	- display notification on the left or right side of the document body
@@ -39,7 +38,6 @@ Instantiate the Notify class with notify = new Notify({params}) and off you go. 
 	showDuration	- show transition duration in mscec
 	hideTransition	- name of the hide transition
 	hideDuration	- hide transition duration in mscec
-	notifyTheme	- name of the theme
 					  
 Example:
 
@@ -48,3 +46,11 @@ Example:
 				autoHideTime : 2000,
 				hPosition : 'left',
 				vPosition : 'top'});
+
+For the show() method you have to pass 3 parameters message, notifyType, and theme
+
+	message		- your message to display
+	notifyType	- type of notification ('primary', 'success', 'info', 'warning', 'danger')
+	theme		- theme ('default')
+	
+	
