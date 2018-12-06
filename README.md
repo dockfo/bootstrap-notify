@@ -3,7 +3,7 @@
 ...stil under construction do not use...
 
 
-Simple class for displaying notification messages written in plain vanilla JavaScript.
+Simple class for displaying notification messages written in vanilla JavaScript.
 
 How to use.
 
