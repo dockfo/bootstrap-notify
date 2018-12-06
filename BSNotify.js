@@ -35,7 +35,7 @@
           this.pushDownClass = 'pushdown';
           this.pushDownDuration = 100;
     // user defined values on instantiating the Notify class
-        if(params !== null && typeof(params) === "object"){       // check for validity of user values provided ...
+        if(params !== null && typeof(params) === "object"){       // checking the validity of user provided values  ...
           let _this = this;
           let userParams = this.checkUserOverrides(params);
           Object.keys(userParams).forEach(function(param){
