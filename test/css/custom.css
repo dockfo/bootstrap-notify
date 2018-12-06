@@ -1,15 +1,15 @@
 
 body{	background:rgba(0,0,0,0.2);
-		padding:20px;}
+			padding:20px;}
+
+.topmargin{margin-top:10%;}
 
 .turnleftup{transform:rotate(45deg);}
 
 .turnrightup{transform:rotate(-45deg);}
 
-.largeicon{	color:rgba(255,255,255,0.3);
-		position:relative;
-		top:-28px;
-		left:-20px;
-		font-size:10rem;}
+.turnleftdown{transform:rotate(-45deg);}
 
+.turnrightdown{transform:rotate(45deg);}
 
+.params{height:300px;}
