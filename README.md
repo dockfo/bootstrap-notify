@@ -35,7 +35,7 @@ Instantiate the Notify class with notify = new Notify() and off you go. To displ
 	notifyHeight	- true for auto height or height in pixels
 	notifySpacing	- vertical spacing in pixels between notification
 	autoHide	- true for autohide or false for manually close the notification
-	autoHideInd	- true display time remaining as progressive bar for closing the notification
+	autoHideInd	- true display, as progressive bar, the time remaining for closing the notification
 	autoHideTime	- display duration in msec
 	hideOnClick	- true hide notification on click   
 	showTransition	- name of the show transition 
