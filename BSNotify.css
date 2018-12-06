@@ -4,15 +4,6 @@
  * @link         https://github.com/dockfo/boot-strap-notify
 */
 
-.turnleftup{transform:rotate(45deg);}
-.turnrightup{transform:rotate(-45deg);}
-.largeicon{	color:rgba(255,255,255,0.3);
-						position:relative;
-						top:-28px;
-						left:-20px;
-						font-size:10rem;}
-
-
 .notifycontainer{	z-index:9999;
 									width:400px;
 									height:auto;
