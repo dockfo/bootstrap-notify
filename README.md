@@ -43,7 +43,7 @@ Instantiate the Notify class with notify = new Notify() and off you go. To displ
 	hideTransition	- name of the hide transition
 	hideDuration	- hide transition duration in mscec
 					  
-Example:
+example:
 
 	notify = new Notify({ 	notifyHeight : 'auto',
 				hideDuration : 1500,
