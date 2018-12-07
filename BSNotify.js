@@ -31,12 +31,8 @@
           _this.showTransition = 'slide';          // values : available show transitions -> 'slide', 'jelly', 'fade', 'dissolve', 'shrink', 'grow' ... feel free to add new ones ;-)
           _this.showDuration = 800;                // values : time in microseconds -> show transition duration
           _this.hideTransition = 'rocket';         // values : available hide trnsitions -> 'slide', 'elastic', 'fade', 'dissolve', 'shrink', 'grow' ... feel free to add new ones ;-)
-          _this.hideDuration = 1500;                // values : time in microseconds -> hide transition duration
-    // not user definable properties
-          _this.pushDownClass = 'pushdown';
-          _this.pullUpClass = 'pullup';
-          _this.pushDownDuration = 100;
-          _this.pullUpDuration = 100;
+          _this.hideDuration = 1500;               // values : time in microseconds -> hide transition duration
+
     // user defined values on instantiating the Notify class
         if(params !== null && typeof(params) === "object"){       // check for validity of user values provided ...
           //let _this = this;
@@ -69,12 +65,21 @@
                     console.warn('BSNotify v0.4 - ' + param + ' : \'' + params[param] + '\' - Parameter does not exists or wrong value is provided.')
                   }
                 });
+
               return userParams;
             };
 
           Object.keys(params = userParams(params)).forEach(function(param){
             _this[param] = params[param];                     // ... and setting them
           });
+          // not user definable properties
+                if(_this.insertPosition === 'first'){
+                  _this.clearanceClass = 'pushdown';
+                    _this.clearanceDuration = 100;
+                }else if(_this.insertPosition === 'last'){
+                  _this.clearanceClass = 'pullup';
+                  _this.clearanceDuration = 100;
+                }
         }
       };
 
@@ -130,10 +135,8 @@
                   }else if(_this.notifyType === 'block'){
                     return ('notify-block-hide-' + _this.hideTransition);
                   }
-              case 'pushDownClass' :
-                  return (_this.pushDownClass);
-              case 'pullUpClass' :
-                  return (_this.pullUpClass);
+              case 'clearanceClass' :
+                  return (_this.clearanceClass);
               case 'showAnimation' :
                   if(_this.notifyType === 'card'){
                     return (_this.showTransition + "-" + _this.hPosition + ' ' + _this.showDuration + 'ms linear forwards');
@@ -146,10 +149,8 @@
                   }else if(_this.notifyType === 'block'){
                     return (_this.hideTransition + "-" + _this.vPosition + ' ' + _this.hideDuration + 'ms linear forwards');
                   }
-              case 'pushDownAnimation' :
-                  return (_this.pushDownClass + ' ' + _this.pushDownDuration + 'ms linear forwards');
-              case 'pullUpAnimation' :
-                  return (_this.pullUpClass + ' ' + _this.pullUpDuration + 'ms linear forwards');
+              case 'clearanceAnimation' :
+                  return (_this.clearanceClass + ' ' + _this.clearanceDuration + 'ms linear forwards');
               case 'notifyClass' :
                   if(_this.notifyType === 'card'){
                     return ('notify-' + checkNotifyType(data));
@@ -232,25 +233,23 @@
                 let notifyClass = userOverrides('notifyClass', type, theme);
                 let notifySpacing = userOverrides('notifySpacing');
                 let notifyHeight = userOverrides('notifyHeight');
-                let pushDownClass = userOverrides('pushDownClass');
-                let pullUpClass = userOverrides('pullUpClass');
-                let pushDownAnimation = userOverrides('pushDownAnimation');
-                let pullUpAnimation = userOverrides('pullUpAnimation');
+                let clearanceClass = userOverrides('clearanceClass');
+                let clearanceAnimation = userOverrides('clearanceAnimation');
                 let container = document.getElementById('notifycontainer-' + this.vPosition + this.hPosition);
                 let notify = document.createElement('div');
 
             // display notification
                   if(container.hasChildNodes() && this.insertPosition === 'first'){                                        // add pushDown class to first notification
-                      notify.classList.add(pushDownClass);
-                      notify.style.animation = pushDownAnimation;
+                      notify.classList.add(clearanceClass);
+                      notify.style.animation = clearanceAnimation;
                       setTimeout(function(){
-                        notify.classList.remove(pushDownClass);
+                        notify.classList.remove(clearanceClass);
                         notify.classList.add(notifyClass, showClass);
                         notify.style.animation = showAnimation;
                         notify.style.margin = notifySpacing;
                         notify.style.height = notifyHeight;
                         notify.innerHTML = txtMessage;
-                      }, this.pushDownDuration)
+                      }, this.clearanceDuration)
                   }else{
                       notify.classList.add(notifyClass, showClass);                     // first notification without pushDown class
                       notify.style.animation = showAnimation;
@@ -302,14 +301,14 @@
                       setTimeout(function(){
                         if(_this.insertPosition === 'last'){
                           notify.style.opacity = '0';
-                            notify.classList.add(pullUpClass);
-                            notify.style.animation = pullUpAnimation;
+                            notify.classList.add(clearanceClass);
+                            notify.style.animation = clearanceAnimation;
                           setTimeout(function(){
                             notify.parentNode.removeChild(notify);
                             if(!container.hasChildNodes()){
                               document.body.removeChild(container);
                             }
-                          }, _this.pullUpDuration)
+                          }, _this.clearanceDuration)
                         }else if(_this.insertPosition === 'first'){
                           notify.parentNode.removeChild(notify);
                           if(!container.hasChildNodes()){
@@ -333,22 +332,22 @@
             let notifyClass = userOverrides('notifyClass', type, theme);
             let notifySpacing = userOverrides('notifySpacing');
             let notifyHeight = userOverrides('notifyHeight');
-            let pushDownClass = userOverrides('pushDownClass');
-            let pushDownAnimation = userOverrides('pushDownAnimation');
+            let clearanceClass = userOverrides('clearanceClass');
+            let clearanceAnimation = userOverrides('clearanceAnimation');
             let container = document.getElementById('notifycontainer-' + this.vPosition);
             let notify = document.createElement('div');
 
             if(container.hasChildNodes()){                                        // add pushDown class to first notification
-                notify.classList.add(pushDownClass);
-                notify.style.animation = pushDownAnimation;
+                notify.classList.add(clearanceClass);
+                notify.style.animation = clearanceAnimation;
                 setTimeout(function(){
-                  notify.classList.remove(pushDownClass);
+                  notify.classList.remove(clearanceClass);
                   notify.classList.add(notifyClass, showClass);
                   notify.style.animation = showAnimation;
                   notify.style.margin = notifySpacing;
                   notify.style.height = notifyHeight;
                   notify.innerHTML = txtMessage;
-                }, this.pushDownDuration)
+                }, this.clearanceDuration)
             }else{
                 notify.classList.add(notifyClass, showClass);                     // first notification without pushDown class
                 notify.style.animation = showAnimation;
@@ -368,6 +367,10 @@
 
 
     }
+
+
+
+
 
     //end class
   }
