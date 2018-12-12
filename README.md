@@ -33,7 +33,7 @@ Instantiate the Notify class with notify = new Notify() and off you go. To displ
 	hMargin		- distance in pixels from the left or right margin of the document body
 	vMargin		- distance in pixels from the top or bottom margin of the document body
 	notifyHeight	- true for auto height or height in pixels
-	notifySpacing	- vertical spacing in pixels between notification
+	notifySpacing	- vertical spacing between notification in pixels 
 	autoHide	- autohide or manually close the notification
 	autoHideInd	- display, as progressive bar, the time remaining for closing the notification
 	autoHideTime	- display duration in msec
