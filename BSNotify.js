@@ -32,8 +32,9 @@
           _this.showDuration = 800;                // values : time in microseconds -> show transition duration
           _this.hideTransition = 'rocket';         // values : available hide trnsitions -> 'slide', 'elastic', 'fade', 'dissolve', 'shrink', 'grow' ... feel free to add new ones ;-)
           _this.hideDuration = 1500;               // values : time in microseconds -> hide transition duration
+          // not user definable properties
+          _this.clearanceDuration = 200;
 
-    // user defined values on instantiating the Notify class
           _this.setParams(params);
       };
 
@@ -47,6 +48,7 @@
     }
 
     setParams(params){
+      // user defined values on instantiating the Notify class
       let _this = this;
       if(params !== null && typeof(params) === "object"){       // check for validity of user values provided ...
         //let _this = this;
@@ -56,20 +58,20 @@
                                               hPosition             : [ 'left', 'right' ],
                                               vPosition             : [ 'top', 'bottom' ],
                                               insertPosition        : [ 'first', 'last'],
-                                              notifyHeight          : [ 'auto' ],           // todo
-                                              autoHide              : [ true, false ],      // todo
+                                              notifyHeight          : [ 'auto' ],                                // todo
+                                              autoHide              : [ true, false ],                           // todo
                                               autoHideInd           : [ true, false ],
                                               showTransition        : [ 'slide', 'jelly', 'wall', 'random'],
                                               hideTransition        : [ 'rocket', 'random' ],
-                                              notifyTheme           : [ 'default', 'random'],        // todo
-                                              hideOnClick           : [ true, false ]      // todo
+                                              notifyStyle           : [ 'default', 'random'],                    // todo
+                                              hideOnClick           : [ true, false ]                            // todo
                                             };
                           let setupNumeric = {  hMargin         : { min : 10,   max : 20 },       // minimum and maximum limits for hMargin property
                                                 vMargin         : { min : 10,   max : 20 },       // minimum and maximum limits for vMargin property
-                                                notifyHeight    : { min : 50,  max : 200},       // minimum and maximum limits for notifyHeight property
+                                                notifyHeight    : { min : 50,  max : 200},        // minimum and maximum limits for notifyHeight property
                                                 notifySpacing   : { min : 5,    max : 15 },       // minimum and maximum limits for notifySpacing property
                                                 autoHideTime    : { min : 2000, max : 15000 },    // minimum and maximum limits for autoHideTime property
-                                                showDuration    : { min : 400,  max : 2000 },    // minimum and maximum limits for showDuration property
+                                                showDuration    : { min : 400,  max : 2000 },     // minimum and maximum limits for showDuration property
                                                 hideDuration    : { min : 400,  max : 2000 }      // minimum and maximum limits for hMahideDurationrgin property
                                               };
               Object.keys(params).forEach(function(param){
@@ -86,13 +88,10 @@
         Object.keys(params = userParams(params)).forEach(function(param){
           _this[param] = params[param];                     // ... and setting them
         });
-        // not user definable properties
-            _this.clearanceDuration = 150;
       }
     }
 
     show(message, type,  style = 'default'){
-        //console.log(this);
           let _this = this;
           let createContainer = function(){
                               if(_this.notifyType === 'card'){
@@ -225,30 +224,22 @@
             // initialize vars
                 createContainer();
                 let txtMessage = formatMessage(message, type, style);
-                let showClass = userOverrides('showClass');
-                let showAnimation = userOverrides('showAnimation');
-                let hideClass = userOverrides('hideClass');
-                let hideAnimation = userOverrides('hideAnimation');
-                let notifyClass = userOverrides('notifyClass', type, style);
-                let notifySpacing = userOverrides('notifySpacing');
-                let notifyHeight = userOverrides('notifyHeight');
                 let container = document.getElementById('notifycontainer-' + this.vPosition + this.hPosition);
                 let notify = document.createElement('div');
-                //console.log(_this.clearanceDuration);
             // display notification
                   if(container.hasChildNodes() && this.insertPosition === 'first'){                                        // add pushDown class to first notification
                       setTimeout(function(){
-                        notify.classList.add(notifyClass, showClass);
-                        notify.style.animation = showAnimation;
-                        notify.style.margin = notifySpacing;
-                        notify.style.height = notifyHeight;
+                        notify.classList.add(userOverrides('notifyClass', type, style), userOverrides('showClass'));
+                        notify.style.animation = userOverrides('showAnimation');
+                        notify.style.margin = userOverrides('notifySpacing');
+                        notify.style.height = userOverrides('notifyHeight');
                         notify.innerHTML = txtMessage;
                       }, this.clearanceDuration);
                   }else{
-                      notify.classList.add(notifyClass, showClass);                     // first notification without pushDown class
-                      notify.style.animation = showAnimation;
-                      notify.style.margin = notifySpacing;
-                      notify.style.height = notifyHeight;
+                      notify.classList.add(userOverrides('notifyClass', type, style), userOverrides('showClass'));                     // first notification without pushDown class
+                      notify.style.animation = userOverrides('showAnimation');
+                      notify.style.margin = userOverrides('notifySpacing');
+                      notify.style.height = userOverrides('notifyHeight');
                       notify.innerHTML = txtMessage;
                   }
 
@@ -297,7 +288,7 @@
                   }
 
                   setTimeout(function(){
-                    notify.classList.remove(showClass);
+                    notify.classList.remove(userOverrides('showClass'));
                     notify.style.animation ='';
                     if(_this.autoHideInd === true){
                       let progressBar = notify.getElementsByClassName('progressbar')[0];
@@ -321,25 +312,27 @@
 
                   setTimeout(function(){
                     setTimeout(function(){
-                      notify.classList.add(hideClass);
-                      notify.style.animation = hideAnimation;
+                      notify.classList.add(userOverrides('hideClass'));
+                      notify.style.animation = userOverrides('hideAnimation');
                       setTimeout(function(){
                           notify.style.animation ='';
-                          //console.log('closing', _this.insertPosition, _this.vPosition);
                           notify.style.opacity = '0';
                           if(container.childNodes.length != 1){
                             let startTime = new Date().getTime();
                             let currentTime;
                             let endProgress = _this.clearanceDuration;
                             let percentProgress = 0;
+                            let notifyOffsetHeight = notify.offsetHeight;
+                            let margin;
                             let clearSpace = setInterval(function(){
                               currentTime = new Date().getTime();
                               percentProgress = (currentTime-startTime)/endProgress;
-                              notify.style.height = notify.offsetHeight - Math.floor(notify.offsetHeight * percentProgress) + 'px';
-                              if(_this.insertPosition === 'top'){
-                                notify.style.margin = '0 0 ' + _this.notifySpacing - Math.floor(_this.notifySpacing * percentProgress) + 'px 0'
-                              }else{
-                                notify.style.margin = _this.notifySpacing - Math.floor(_this.notifySpacing * percentProgress) + 'px 0 0 0'
+                              notify.style.height = notifyOffsetHeight - Math.floor(notifyOffsetHeight * percentProgress) + 'px';
+                              margin = _this.notifySpacing - Math.floor(_this.notifySpacing * percentProgress);
+                              if(_this.vPosition === 'top'){
+                                notify.style.margin = '0 0 ' + margin + 'px 0';
+                              }else if(_this.vPosition === 'bottom'){
+                                notify.style.margin = margin + 'px 0 0 0';
                               }
                               if(currentTime-startTime >= endProgress){
                                 clearInterval(clearSpace);
