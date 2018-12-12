@@ -61,4 +61,4 @@ example:
 
 	notify.show('your message', 'warning')
 	
-	
+After instantiating the class you can modify the parameters with the method setParams({...}) as follows :
