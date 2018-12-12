@@ -31,35 +31,30 @@
 			.notify-primary{	position:relative;
 												background:#007bff;
 												box-shadow:	0 3px 7px rgba(0,0,0,0.3);
-												height:auto;
 												max-width:400px;
 												overflow:hidden;
 												border-radius:5px;}
 			.notify-success{	position:relative;
 												background:#28a745;
 												box-shadow: 0 3px 7px rgba(0,0,0,0.3);
-												height:auto;
 												overflow:hidden;
 												max-width:400px;
 												border-radius:5px;}
 			.notify-info{	position:relative;
 										background:#17a2b8;
 										box-shadow: 0 3px 7px rgba(0,0,0,0.3);
-										height:auto;
 										overflow:hidden;
 										max-width:400px;
 										border-radius:5px;}
 			.notify-warning{	position:relative;
 												background:#ffc107;
 												box-shadow: 0 3px 7px rgba(0,0,0,0.3);
-												height:auto;
 												overflow:hidden;
 												max-width:400px;
 												border-radius:5px;}
 			.notify-danger{	position:relative;
 											background:#dc3545;
 											box-shadow: 0 3px 7px rgba(0,0,0,0.3);
-											height:auto;
 											overflow:hidden;
 											max-width:400px;
 											border-radius:5px;}
@@ -67,9 +62,9 @@
 
 /* NOTIFY CARD CLASSES */
 			/* pushdown class created dynamicaly by script depending on user values */
-			.pushdown{}
+			.pushdown{transition: all 100ms}
 			/* pullup class created dynamicaly by script depending on user values */
-			.pullup{}
+			.pullup{transition: all 100ms}
 			/* show classes created dynamicaly by script depending on user values */
 			.notify-show-slide {}
 			.notify-show-jelly {}
