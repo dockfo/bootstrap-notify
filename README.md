@@ -69,3 +69,5 @@ After instantiating the class you can modify the parameters with the method setP
 				showTransition 	: 'jelly',
 				hideTransition	: 'teleport'});
 
+After instantiating the class you cant change the 'vPosition', 'hPosition' and the 'notifyType' but  you can instantiate new notification in other position.
+
