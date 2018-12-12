@@ -22,11 +22,11 @@
           _this.insertPosition = 'first'           // values : 'first', 'last'
           _this.hMargin = 10;                      // values : pixels -> from the left or right margin of the document body
           _this.vMargin = 10;                      // values : pixels -> from the top or bottom margin of the document body
-          _this.notifyHeight = 100                 // values : true for auto height or number in pixels -> height of the notification
+          _this.notifyHeight = 50                  // values : true for auto height or number in pixels -> height of the notification
           _this.notifySpacing = 10;                // values : pixels -> vertical spacing between notifications
           _this.autoHide = true;                   // values : true, false
           _this.autoHideInd = true;                // values : true, false
-          _this.autoHideTime = 8000;               // values : time in microseconds -> display duration without the transitions time
+          _this.autoHideTime = 15000;               // values : time in microseconds -> display duration without the transitions time
           _this.hideOnClick = true;                // values : true false
           _this.showTransition = 'slide';          // values : available show transitions -> 'slide', 'jelly', 'fade', 'dissolve', 'shrink', 'grow' ... feel free to add new ones ;-)
           _this.showDuration = 800;                // values : time in microseconds -> show transition duration
@@ -34,53 +34,7 @@
           _this.hideDuration = 1500;               // values : time in microseconds -> hide transition duration
 
     // user defined values on instantiating the Notify class
-        if(params !== null && typeof(params) === "object"){       // check for validity of user values provided ...
-          //let _this = this;
-          let userParams = function(params){                               // check user provided overrides
-                            let userParams = {};
-                            let setupString = { notifyType            : [ 'card', 'block' ],
-                                                hPosition             : [ 'left', 'right' ],
-                                                vPosition             : [ 'top', 'bottom' ],
-                                                insertPosition        : [ 'first', 'last'],
-                                                notifyHeight          : [ 'auto' ],           // todo
-                                                autoHide              : [ true, false ],      // todo
-                                                autoHideInd           : [ true, false ],
-                                                showTransition        : [ 'slide', 'jelly', 'wall'],
-                                                hideTransition        : [ 'rocket' ],
-                                                notifyTheme           : [ 'default'],        // todo
-                                                hideOnClick           : [ true, false ]      // todo
-                                              };
-                            let setupNumeric = {  hMargin         : { min : 10,   max : 20 },       // minimum and maximum limits for hMargin property
-                                                  vMargin         : { min : 10,   max : 20 },       // minimum and maximum limits for vMargin property
-                                                  notifyHeight    : { min : 100,  max : 200},       // minimum and maximum limits for notifyHeight property
-                                                  notifySpacing   : { min : 5,    max : 15 },       // minimum and maximum limits for notifySpacing property
-                                                  autoHideTime    : { min : 2000, max : 15000 },    // minimum and maximum limits for autoHideTime property
-                                                  showDuration    : { min : 400,  max : 20000 },     // minimum and maximum limits for showDuration property
-                                                  hideDuration    : { min : 400,  max : 1500 }      // minimum and maximum limits for hMahideDurationrgin property
-                                                };
-                Object.keys(params).forEach(function(param){
-                  if( (setupString.hasOwnProperty(param) && setupString[param].includes(params[param])) || (setupNumeric.hasOwnProperty(param) && typeof(params[param]) === 'number' && params[param] >= setupNumeric[param].min && params[param] <= setupNumeric[param].max  ) ){
-                      userParams[param] = params[param];
-                  }else{
-                    console.warn('BSNotify v0.4 - ' + param + ' : \'' + params[param] + '\' - Parameter does not exists or wrong value is provided.')
-                  }
-                });
-
-              return userParams;
-            };
-
-          Object.keys(params = userParams(params)).forEach(function(param){
-            _this[param] = params[param];                     // ... and setting them
-          });
-          // not user definable properties
-                if(_this.insertPosition === 'first'){
-                  _this.clearanceClass = 'pushdown';
-                    _this.clearanceDuration = 100;
-                }else if(_this.insertPosition === 'last'){
-                  _this.clearanceClass = 'pullup';
-                  _this.clearanceDuration = 100;
-                }
-        }
+          _this.setParams(params);
       };
 
       setup(params);
@@ -88,8 +42,57 @@
 
     //methods
 
-    show(message, type,  theme = 'default'){
-        console.log(this);
+    getParams(){
+      return(_this);
+    }
+
+    setParams(params){
+      let _this = this;
+      if(params !== null && typeof(params) === "object"){       // check for validity of user values provided ...
+        //let _this = this;
+        let userParams = function(params){                              // check user provided overrides
+                          let userParams = {};
+                          let setupString = { notifyType            : [ 'card', 'block' ],
+                                              hPosition             : [ 'left', 'right' ],
+                                              vPosition             : [ 'top', 'bottom' ],
+                                              insertPosition        : [ 'first', 'last'],
+                                              notifyHeight          : [ 'auto' ],           // todo
+                                              autoHide              : [ true, false ],      // todo
+                                              autoHideInd           : [ true, false ],
+                                              showTransition        : [ 'slide', 'jelly', 'wall', 'random'],
+                                              hideTransition        : [ 'rocket', 'random' ],
+                                              notifyTheme           : [ 'default', 'random'],        // todo
+                                              hideOnClick           : [ true, false ]      // todo
+                                            };
+                          let setupNumeric = {  hMargin         : { min : 10,   max : 20 },       // minimum and maximum limits for hMargin property
+                                                vMargin         : { min : 10,   max : 20 },       // minimum and maximum limits for vMargin property
+                                                notifyHeight    : { min : 50,  max : 200},       // minimum and maximum limits for notifyHeight property
+                                                notifySpacing   : { min : 5,    max : 15 },       // minimum and maximum limits for notifySpacing property
+                                                autoHideTime    : { min : 2000, max : 15000 },    // minimum and maximum limits for autoHideTime property
+                                                showDuration    : { min : 400,  max : 2000 },    // minimum and maximum limits for showDuration property
+                                                hideDuration    : { min : 400,  max : 2000 }      // minimum and maximum limits for hMahideDurationrgin property
+                                              };
+              Object.keys(params).forEach(function(param){
+                if( (setupString.hasOwnProperty(param) && setupString[param].includes(params[param])) || (setupNumeric.hasOwnProperty(param) && typeof(params[param]) === 'number' && params[param] >= setupNumeric[param].min && params[param] <= setupNumeric[param].max  ) ){
+                    userParams[param] = params[param];
+                }else{
+                  console.warn('BSNotify v0.4 - ' + param + ' : \'' + params[param] + '\' - Parameter does not exists or wrong value is provided.')
+                }
+              });
+
+            return userParams;
+          };
+
+        Object.keys(params = userParams(params)).forEach(function(param){
+          _this[param] = params[param];                     // ... and setting them
+        });
+        // not user definable properties
+            _this.clearanceDuration = 150;
+      }
+    }
+
+    show(message, type,  style = 'default'){
+        //console.log(this);
           let _this = this;
           let createContainer = function(){
                               if(_this.notifyType === 'card'){
@@ -135,8 +138,6 @@
                   }else if(_this.notifyType === 'block'){
                     return ('notify-block-hide-' + _this.hideTransition);
                   }
-              case 'clearanceClass' :
-                  return (_this.clearanceClass);
               case 'showAnimation' :
                   if(_this.notifyType === 'card'){
                     return (_this.showTransition + "-" + _this.hPosition + ' ' + _this.showDuration + 'ms linear forwards');
@@ -149,8 +150,6 @@
                   }else if(_this.notifyType === 'block'){
                     return (_this.hideTransition + "-" + _this.vPosition + ' ' + _this.hideDuration + 'ms linear forwards');
                   }
-              case 'clearanceAnimation' :
-                  return (_this.clearanceClass + ' ' + _this.clearanceDuration + 'ms linear forwards');
               case 'notifyClass' :
                   if(_this.notifyType === 'card'){
                     return ('notify-' + checkNotifyType(data));
@@ -180,7 +179,7 @@
             }
           };
 
-          let formatMessage = function(message, type = 'danger', theme = 'default'){       // creating the message displayed inside notification div depending on notification type (primary, warning, danger etc.)
+          let formatMessage = function(message, type = 'danger', style = 'default'){       // creating the message displayed inside notification div depending on notification type (primary, warning, danger etc.)
                             let icon;
                             let iconNotifyType;
                             if(_this.notifyType === 'card'){
@@ -213,7 +212,7 @@
                                      +    '</div>'
                                      +    '<div class="row">'
                                      +       '<i class="' + icon + ' ' + iconNotifyType +'"></i>'
-                                     +      '<div class="col-sm-10">This is a \"' + _this.vPosition + ' ' + _this.hPosition + '\" notify with Bootstrap type : \"' + type + '\" and \"' + theme + '\" theme.</div>'
+                                     +      '<div class="col-sm-10">This is a \"' + _this.vPosition + ' ' + _this.hPosition + '\" notify with Bootstrap type : \"' + type + '\" and \"' + style + '\" style.</div>'
                                      +      '</div>'
                                      + '</div>';
 
@@ -225,31 +224,26 @@
           if(this.notifyType === 'card'){
             // initialize vars
                 createContainer();
-                let txtMessage = formatMessage(message, type, theme);
+                let txtMessage = formatMessage(message, type, style);
                 let showClass = userOverrides('showClass');
                 let showAnimation = userOverrides('showAnimation');
                 let hideClass = userOverrides('hideClass');
                 let hideAnimation = userOverrides('hideAnimation');
-                let notifyClass = userOverrides('notifyClass', type, theme);
+                let notifyClass = userOverrides('notifyClass', type, style);
                 let notifySpacing = userOverrides('notifySpacing');
                 let notifyHeight = userOverrides('notifyHeight');
-                let clearanceClass = userOverrides('clearanceClass');
-                let clearanceAnimation = userOverrides('clearanceAnimation');
                 let container = document.getElementById('notifycontainer-' + this.vPosition + this.hPosition);
                 let notify = document.createElement('div');
-
+                //console.log(_this.clearanceDuration);
             // display notification
                   if(container.hasChildNodes() && this.insertPosition === 'first'){                                        // add pushDown class to first notification
-                      notify.classList.add(clearanceClass);
-                      notify.style.animation = clearanceAnimation;
                       setTimeout(function(){
-                        notify.classList.remove(clearanceClass);
                         notify.classList.add(notifyClass, showClass);
                         notify.style.animation = showAnimation;
                         notify.style.margin = notifySpacing;
                         notify.style.height = notifyHeight;
                         notify.innerHTML = txtMessage;
-                      }, this.clearanceDuration)
+                      }, this.clearanceDuration);
                   }else{
                       notify.classList.add(notifyClass, showClass);                     // first notification without pushDown class
                       notify.style.animation = showAnimation;
@@ -261,12 +255,42 @@
                   if(this.vPosition === 'top'){
                     if(this.insertPosition === 'first'){
                       container.insertBefore(notify, container.childNodes[0]);          // display every new notification in first position
+                        if(container.childNodes.length != 1){
+                          let startTime = new Date().getTime();
+                          let currentTime;
+                          let endProgress = _this.clearanceDuration;
+                          let percentProgress = 0;
+                          let push = setInterval(function(){
+                            currentTime = new Date().getTime();
+                            percentProgress = (currentTime-startTime)/endProgress;
+                            notify.style.height = Math.floor(_this.notifyHeight * percentProgress) + 'px';
+                            notify.style.margin = '0 0 ' + Math.floor(_this.notifySpacing * percentProgress) + 'px 0';
+                            if(currentTime-startTime >= endProgress){
+                              clearInterval(push);
+                            }
+                          }, 10);
+                        }
                     }else{
                       container.appendChild(notify);
                     }
                   }else if(this.vPosition === 'bottom'){
                     if(this.insertPosition === 'first'){
                       container.appendChild(notify);
+                      if(container.childNodes.length != 1){
+                        let startTime = new Date().getTime();
+                        let currentTime;
+                        let endProgress = _this.clearanceDuration;
+                        let percentProgress = 0;
+                        let push = setInterval(function(){
+                          currentTime = new Date().getTime();
+                          percentProgress = (currentTime-startTime)/endProgress;
+                          notify.style.height = Math.floor(_this.notifyHeight * percentProgress) + 'px';
+                          notify.style.margin = Math.floor(_this.notifySpacing * percentProgress) + 'px 0 0 0';
+                          if(currentTime-startTime >= endProgress){
+                            clearInterval(push);
+                          }
+                        }, 10);
+                      }
                     }else{
                       container.insertBefore(notify, container.childNodes[0]);
                     }
@@ -274,6 +298,7 @@
 
                   setTimeout(function(){
                     notify.classList.remove(showClass);
+                    notify.style.animation ='';
                     if(_this.autoHideInd === true){
                       let progressBar = notify.getElementsByClassName('progressbar')[0];
                       if( progressBar !== null){
@@ -292,44 +317,56 @@
                             },  10);
                       }
                     };
-                  }, this.showDuration);
+                  }, this.showDuration + this.clearanceDuration);
 
                   setTimeout(function(){
                     setTimeout(function(){
                       notify.classList.add(hideClass);
                       notify.style.animation = hideAnimation;
                       setTimeout(function(){
-                        if(_this.insertPosition === 'last'){
+                          notify.style.animation ='';
+                          //console.log('closing', _this.insertPosition, _this.vPosition);
                           notify.style.opacity = '0';
-                            notify.classList.add(clearanceClass);
-                            notify.style.animation = clearanceAnimation;
+                          if(container.childNodes.length != 1){
+                            let startTime = new Date().getTime();
+                            let currentTime;
+                            let endProgress = _this.clearanceDuration;
+                            let percentProgress = 0;
+                            let clearSpace = setInterval(function(){
+                              currentTime = new Date().getTime();
+                              percentProgress = (currentTime-startTime)/endProgress;
+                              notify.style.height = notify.offsetHeight - Math.floor(notify.offsetHeight * percentProgress) + 'px';
+                              if(_this.insertPosition === 'top'){
+                                notify.style.margin = '0 0 ' + _this.notifySpacing - Math.floor(_this.notifySpacing * percentProgress) + 'px 0'
+                              }else{
+                                notify.style.margin = _this.notifySpacing - Math.floor(_this.notifySpacing * percentProgress) + 'px 0 0 0'
+                              }
+                              if(currentTime-startTime >= endProgress){
+                                clearInterval(clearSpace);
+                              }
+                            }, 10);
+                          }
                           setTimeout(function(){
                             notify.parentNode.removeChild(notify);
                             if(!container.hasChildNodes()){
                               document.body.removeChild(container);
                             }
                           }, _this.clearanceDuration)
-                        }else if(_this.insertPosition === 'first'){
-                          notify.parentNode.removeChild(notify);
-                          if(!container.hasChildNodes()){
-                            document.body.removeChild(container);
-                          }
-                        }
                       }, _this.hideDuration);
                     }, _this.showDuration);
-                  }, this.autoHideTime);
+                  }, this.autoHideTime + this.clearanceDuration);
 
 
           }else if(this.notifyType === 'block'){
             createContainer();
             //let _this = this;
-            let txtMessage = formatMessage(message, type, theme);
+            let txtMessage = formatMessage(message, type, style);
 
             let showClass = userOverrides('showClass');
             let showAnimation = userOverrides('showAnimation');
             let hideClass = userOverrides('hideClass');
             let hideAnimation = userOverrides('hideAnimation');
-            let notifyClass = userOverrides('notifyClass', type, theme);
+            let notifyClass = userOverrides('notifyClass', type, style);
             let notifySpacing = userOverrides('notifySpacing');
             let notifyHeight = userOverrides('notifyHeight');
             let clearanceClass = userOverrides('clearanceClass');
@@ -357,19 +394,9 @@
             }
             container.appendChild(notify);
 
-
-
-
           }
 
-
-
-
-
     }
-
-
-
 
 
     //end class
