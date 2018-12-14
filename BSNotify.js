@@ -22,11 +22,11 @@
           _this.insertPosition = 'first'           // values : 'first', 'last'
           _this.hMargin = 10;                      // values : pixels -> from the left or right margin of the document body
           _this.vMargin = 10;                      // values : pixels -> from the top or bottom margin of the document body
-          _this.notifyHeight = 50                  // values : true for auto height or number in pixels -> height of the notification
+          _this.notifyHeight = 70                  // values : true for auto height or number in pixels -> height of the notification
           _this.notifySpacing = 10;                // values : pixels -> vertical spacing between notifications
           _this.autoHide = true;                   // values : true, false
           _this.autoHideInd = true;                // values : true, false
-          _this.autoHideTime = 15000;               // values : time in microseconds -> display duration without the transitions time
+          _this.autoHideTime = 15000;              // values : time in microseconds -> display duration without the transitions time
           _this.hideOnClick = true;                // values : true false
           _this.showTransition = 'slide';          // values : available show transitions -> 'slide', 'jelly', 'fade', 'dissolve', 'shrink', 'grow' ... feel free to add new ones ;-)
           _this.showDuration = 800;                // values : time in microseconds -> show transition duration
@@ -209,8 +209,12 @@
                                      +    '<div class="row">'
                                      +      '<div class="progressbar"></div>'
                                      +    '</div>'
+                                     +    '<div class="row" aligh="right">'
+                                     +      '<div class="col-sm-12"><button type="button" class="close notifyclose" aria-label="Close"><span aria-hidden="true">&times;</span></button>'
+                                     +       '</div>'
+                                     +    '</div>'
                                      +    '<div class="row">'
-                                     +       '<i class="' + icon + ' ' + iconNotifyType +'"></i>'
+                                     +       '<i class="' + icon + ' ' + iconNotifyType +'" style="font-size:' + _this.notifyHeight * 150/100 + 'px"></i>'
                                      +      '<div class="col-sm-10">This is a \"' + _this.vPosition + ' ' + _this.hPosition + '\" notify with Bootstrap type : \"' + type + '\" and \"' + style + '\" style.</div>'
                                      +      '</div>'
                                      + '</div>';
@@ -226,27 +230,20 @@
                 let txtMessage = formatMessage(message, type, style);
                 let container = document.getElementById('notifycontainer-' + this.vPosition + this.hPosition);
                 let notify = document.createElement('div');
-            // display notification
-                  if(container.hasChildNodes() && this.insertPosition === 'first'){                                        // add pushDown class to first notification
-                      setTimeout(function(){
-                        notify.classList.add(userOverrides('notifyClass', type, style), userOverrides('showClass'));
-                        notify.style.animation = userOverrides('showAnimation');
-                        notify.style.margin = userOverrides('notifySpacing');
-                        notify.style.height = userOverrides('notifyHeight');
-                        notify.innerHTML = txtMessage;
-                      }, this.clearanceDuration);
-                  }else{
-                      notify.classList.add(userOverrides('notifyClass', type, style), userOverrides('showClass'));                     // first notification without pushDown class
-                      notify.style.animation = userOverrides('showAnimation');
-                      notify.style.margin = userOverrides('notifySpacing');
-                      notify.style.height = userOverrides('notifyHeight');
-                      notify.innerHTML = txtMessage;
+                let _notify;
+                let addShowTransition = function(){
+                          notify.classList.add(userOverrides('notifyClass', type, style), userOverrides('showClass'));
+                          notify.style.animation = userOverrides('showAnimation');
+                          notify.style.margin = userOverrides('notifySpacing');
+                          notify.style.height = userOverrides('notifyHeight');
+                          notify.innerHTML = txtMessage;
                   }
 
                   if(this.vPosition === 'top'){
                     if(this.insertPosition === 'first'){
-                      container.insertBefore(notify, container.childNodes[0]);          // display every new notification in first position
-                        if(container.childNodes.length != 1){
+                        if(container.childNodes.length > 0){
+                          container.insertBefore(notify, container.childNodes[0]);
+                          _notify = container.firstChild;
                           let startTime = new Date().getTime();
                           let currentTime;
                           let endProgress = _this.clearanceDuration;
@@ -258,11 +255,16 @@
                             notify.style.margin = '0 0 ' + Math.floor(_this.notifySpacing * percentProgress) + 'px 0';
                             if(currentTime-startTime >= endProgress){
                               clearInterval(push);
+                              addShowTransition();
                             }
                           }, 10);
+                        }else{
+                          container.appendChild(notify);
+                          addShowTransition();
                         }
                     }else{
                       container.appendChild(notify);
+                      addShowTransition();
                     }
                   }else if(this.vPosition === 'bottom'){
                     if(this.insertPosition === 'first'){
@@ -279,75 +281,125 @@
                           notify.style.margin = Math.floor(_this.notifySpacing * percentProgress) + 'px 0 0 0';
                           if(currentTime-startTime >= endProgress){
                             clearInterval(push);
+                            addShowTransition();
                           }
                         }, 10);
+                      }else{
+                        addShowTransition();
                       }
                     }else{
                       container.insertBefore(notify, container.childNodes[0]);
+                      addShowTransition();
                     }
                   }
-
                   setTimeout(function(){
                     notify.classList.remove(userOverrides('showClass'));
                     notify.style.animation ='';
-                    if(_this.autoHideInd === true){
-                      let progressBar = notify.getElementsByClassName('progressbar')[0];
-                      if( progressBar !== null){
-                        let startTime = new Date().getTime();
-                        let currentTime;
-                        let endProgress = _this.autoHideTime;
-                        let percentProgress = 0;
-                        let displayProgress = setInterval(function(){
-                              currentTime = new Date().getTime();
-                              percentProgress = (currentTime-startTime)*100/endProgress;
-                              progressBar.style.width = percentProgress + '%';
-                                if(currentTime-startTime >= endProgress){
-                                  clearInterval(displayProgress);
-                                  progressBar.classList.add('progressbarfade');
-                                }
-                            },  10);
-                      }
-                    };
+                    if(_this.autoHide === true){
+                      if(_this.autoHideInd === true){
+                        let progressBar = notify.getElementsByClassName('progressbar')[0];
+                        if( progressBar !== null){
+                          let startTime = new Date().getTime();
+                          let currentTime;
+                          let endProgress = _this.autoHideTime;
+                          let percentProgress = 0;
+                          let displayProgress = setInterval(function(){
+                                currentTime = new Date().getTime();
+                                percentProgress = (currentTime-startTime)*100/endProgress;
+                                progressBar.style.width = percentProgress + '%';
+                                  if(currentTime-startTime >= endProgress){
+                                    clearInterval(displayProgress);
+                                    progressBar.classList.add('progressbarfade');
+                                  }
+                              },  10);
+                        }
+                      };
+                    }
                   }, this.showDuration + this.clearanceDuration);
 
-                  setTimeout(function(){
+                  if(this.autoHide === true){
                     setTimeout(function(){
-                      notify.classList.add(userOverrides('hideClass'));
-                      notify.style.animation = userOverrides('hideAnimation');
                       setTimeout(function(){
-                          notify.style.animation ='';
-                          notify.style.opacity = '0';
-                          if(container.childNodes.length != 1){
-                            let startTime = new Date().getTime();
-                            let currentTime;
-                            let endProgress = _this.clearanceDuration;
-                            let percentProgress = 0;
-                            let notifyOffsetHeight = notify.offsetHeight;
-                            let margin;
-                            let clearSpace = setInterval(function(){
-                              currentTime = new Date().getTime();
-                              percentProgress = (currentTime-startTime)/endProgress;
-                              notify.style.height = notifyOffsetHeight - Math.floor(notifyOffsetHeight * percentProgress) + 'px';
-                              margin = _this.notifySpacing - Math.floor(_this.notifySpacing * percentProgress);
-                              if(_this.vPosition === 'top'){
-                                notify.style.margin = '0 0 ' + margin + 'px 0';
-                              }else if(_this.vPosition === 'bottom'){
-                                notify.style.margin = margin + 'px 0 0 0';
-                              }
-                              if(currentTime-startTime >= endProgress){
-                                clearInterval(clearSpace);
-                              }
-                            }, 10);
-                          }
-                          setTimeout(function(){
-                            notify.parentNode.removeChild(notify);
-                            if(!container.hasChildNodes()){
-                              document.body.removeChild(container);
+                        notify.classList.add(userOverrides('hideClass'));
+                        notify.style.animation = userOverrides('hideAnimation');
+                        setTimeout(function(){
+                            notify.style.animation ='';
+                            notify.style.opacity = '0';
+                            if(container.childNodes.length != 1){
+                              let startTime = new Date().getTime();
+                              let currentTime;
+                              let endProgress = _this.clearanceDuration;
+                              let percentProgress = 0;
+                              let notifyOffsetHeight = notify.offsetHeight;
+                              let margin;
+                              let clearSpace = setInterval(function(){
+                                currentTime = new Date().getTime();
+                                percentProgress = (currentTime-startTime)/endProgress;
+                                notify.style.height = notifyOffsetHeight - Math.floor(notifyOffsetHeight * percentProgress) + 'px';
+                                margin = _this.notifySpacing - Math.floor(_this.notifySpacing * percentProgress);
+                                if(_this.vPosition === 'top'){
+                                  notify.style.margin = '0 0 ' + margin + 'px 0';
+                                }else if(_this.vPosition === 'bottom'){
+                                  notify.style.margin = margin + 'px 0 0 0';
+                                }
+                                if(currentTime-startTime >= endProgress){
+                                  clearInterval(clearSpace);
+                                }
+                              }, 10);
                             }
-                          }, _this.clearanceDuration)
-                      }, _this.hideDuration);
-                    }, _this.showDuration);
-                  }, this.autoHideTime + this.clearanceDuration);
+                            setTimeout(function(){
+                              notify.parentNode.removeChild(notify);
+                              if(!container.hasChildNodes()){
+                                document.body.removeChild(container);
+                              }
+                            }, _this.clearanceDuration)
+                        }, _this.hideDuration);
+                      }, _this.showDuration);
+                    }, this.autoHideTime + this.clearanceDuration);
+                  }else{
+                    setTimeout(function(){
+                      let notifyCloseButton;
+                        notifyCloseButton = notify.getElementsByClassName('notifyclose');
+                        let closeNotifcation = function(){
+                          notify.classList.add(userOverrides('hideClass'));
+                          notify.style.animation = userOverrides('hideAnimation');
+                          setTimeout(function(){
+                              notify.style.animation ='';
+                              notify.style.opacity = '0';
+                              if(container.childNodes.length != 1){
+                                let startTime = new Date().getTime();
+                                let currentTime;
+                                let endProgress = _this.clearanceDuration;
+                                let percentProgress = 0;
+                                let notifyOffsetHeight = notify.offsetHeight;
+                                let margin;
+                                let clearSpace = setInterval(function(){
+                                  currentTime = new Date().getTime();
+                                  percentProgress = (currentTime-startTime)/endProgress;
+                                  notify.style.height = notifyOffsetHeight - Math.floor(notifyOffsetHeight * percentProgress) + 'px';
+                                  margin = _this.notifySpacing - Math.floor(_this.notifySpacing * percentProgress);
+                                  if(_this.vPosition === 'top'){
+                                    notify.style.margin = '0 0 ' + margin + 'px 0';
+                                  }else if(_this.vPosition === 'bottom'){
+                                    notify.style.margin = margin + 'px 0 0 0';
+                                  }
+                                  if(currentTime-startTime >= endProgress){
+                                    clearInterval(clearSpace);
+                                  }
+                                }, 10);
+                              }
+                              setTimeout(function(){
+                                notifyCloseButton[0].removeEventListener('click', closeNotifcation);
+                                notify.parentNode.removeChild(notify);
+                                if(!container.hasChildNodes()){
+                                  document.body.removeChild(container);
+                                }
+                              }, _this.clearanceDuration)
+                          }, _this.hideDuration);
+                        };
+                        notifyCloseButton[0].addEventListener('click', closeNotifcation);
+                    }, this.showDuration + this.clearanceDuration);
+                  }
 
 
           }else if(this.notifyType === 'block'){
