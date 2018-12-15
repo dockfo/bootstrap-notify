@@ -1,5 +1,5 @@
 /**
-*  @package      BSNotify v 0.4
+*  @package      BSNotify v 0.1
  * @version      v 0.1
  * @link         https://github.com/dockfo/boot-strap-notify
 */
