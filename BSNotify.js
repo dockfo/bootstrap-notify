@@ -16,13 +16,13 @@
       let _this = this;
       let setup = function (params = null){      // initializing prperties
     // default values
-          _this.notifyType = 'card'                // values : 'card', 'block'
+          _this.notifyType = 'card'                // values : 'card', 'block', 'popup'
           _this.hPosition = 'right';               // values : 'left', 'right'
           _this.vPosition = 'top';                 // values : 'top', 'bottom'
           _this.insertPosition = 'first'           // values : 'first', 'last'
           _this.hMargin = 10;                      // values : pixels -> from the left or right margin of the document body
           _this.vMargin = 10;                      // values : pixels -> from the top or bottom margin of the document body
-          _this.notifyHeight = 70                  // values : true for auto height or number in pixels -> height of the notification
+          _this.notifyHeight = 100                 // values : true for auto height or number in pixels -> height of the notification
           _this.notifySpacing = 10;                // values : pixels -> vertical spacing between notifications
           _this.autoHide = true;                   // values : true, false
           _this.autoHideInd = true;                // values : true, false
@@ -59,12 +59,12 @@
                                               vPosition             : [ 'top', 'bottom' ],
                                               insertPosition        : [ 'first', 'last'],
                                               notifyHeight          : [ 'auto' ],                                // todo
-                                              autoHide              : [ true, false ],                           // todo
+                                              autoHide              : [ true, false ],
                                               autoHideInd           : [ true, false ],
                                               showTransition        : [ 'slide', 'jelly', 'wall', 'random'],
                                               hideTransition        : [ 'rocket', 'random' ],
                                               notifyStyle           : [ 'default', 'random'],                    // todo
-                                              hideOnClick           : [ true, false ]                            // todo
+                                              hideOnClick           : [ true, false ]
                                             };
                           let setupNumeric = {  hMargin         : { min : 10,   max : 20 },       // minimum and maximum limits for hMargin property
                                                 vMargin         : { min : 10,   max : 20 },       // minimum and maximum limits for vMargin property
@@ -181,11 +181,24 @@
           let formatMessage = function(message, type = 'danger', style = 'default'){       // creating the message displayed inside notification div depending on notification type (primary, warning, danger etc.)
                             let icon;
                             let iconNotifyType;
+                            let iconClose;
+                            let textColor;
+                            let title = { primary : 'Primary',
+                                          success : 'Success',
+                                          info    : 'Notification',
+                                          warning : 'Warning',
+                                          danger  : 'Danger'};
                             if(_this.notifyType === 'card'){
                               iconNotifyType = 'icon-card';
                             }else if(_this.notifyType === 'block'){
                               iconNotifyType = 'icon-block';
                             }
+                            if(_this.hPosition === 'left'){
+                              iconClose = 'float-right';
+                            }else{
+                              iconClose = 'float-left';
+                            }
+                            textColor = (type === 'primary' || type === 'success' || type === 'info' || type === 'danger')? 'white' : 'dark';
                             switch(type){
                               case 'primary':
                                   icon = 'glyphicon glyphicon-plus-sign';
@@ -205,21 +218,27 @@
 
                             }
 
-                            let html = '<div class="container-fluid">'
-                                     +    '<div class="row">'
-                                     +      '<div class="progressbar"></div>'
-                                     +    '</div>'
-                                     +    '<div class="row" aligh="right">'
-                                     +      '<div class="col-sm-12"><button type="button" class="close notifyclose" aria-label="Close"><span aria-hidden="true">&times;</span></button>'
-                                     +       '</div>'
-                                     +    '</div>'
-                                     +    '<div class="row">'
-                                     +       '<i class="' + icon + ' ' + iconNotifyType +'" style="font-size:' + _this.notifyHeight * 150/100 + 'px"></i>'
-                                     +      '<div class="col-sm-10">This is a \"' + _this.vPosition + ' ' + _this.hPosition + '\" notify with Bootstrap type : \"' + type + '\" and \"' + style + '\" style.</div>'
-                                     +      '</div>'
-                                     + '</div>';
+                            let html  = '<div class="container-fluid">';
+                                html +=   '<i class="' + icon + ' ' + iconNotifyType +'" style="font-size:' + _this.notifyHeight * 150/100 + 'px"></i>';
+                                html +=     '<div class="title">' + title[type] + '</div>';
 
+                            if(_this.autoHide === false){
+                                html +=   '<div class="row">';
+                                html +=     '<div class="col-sm-12"><button type="button" class="close notifyclose ' + iconClose + '" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>';
+                                html +=   '</div>';
+                            }
 
+                                html +=   '<div class="row">';
+                                html +=      '<div class="col-sm-12 message text-' + textColor + '">This is a \"' + _this.vPosition + ' ' + _this.hPosition + '\" notify with Bootstrap type : \"' + type + '\" and \"' + style + '\" style.</div>';
+                                html +=    '</div>';
+
+                            if(_this.autoHideInd === true && _this.autoHide === true){
+                                html +=  '<div class="row">';
+                                html +=     '<div class="progressbar"></div>';
+                                html +=   '</div>';
+                            };
+
+                            html +=  '</div>';
 
                             return html;                                                                    // returns html string
                           }
@@ -230,7 +249,6 @@
                 let txtMessage = formatMessage(message, type, style);
                 let container = document.getElementById('notifycontainer-' + this.vPosition + this.hPosition);
                 let notify = document.createElement('div');
-                let _notify;
                 let addShowTransition = function(){
                           notify.classList.add(userOverrides('notifyClass', type, style), userOverrides('showClass'));
                           notify.style.animation = userOverrides('showAnimation');
@@ -238,12 +256,91 @@
                           notify.style.height = userOverrides('notifyHeight');
                           notify.innerHTML = txtMessage;
                   }
+                let closeNotification = function(){
+                  let notifyCloseButton = notify.getElementsByClassName('notifyclose');
+                  notifyCloseButton[0].removeEventListener('click', closeNotification);
+                  notify.classList.add(userOverrides('hideClass'));
+                  notify.style.animation = userOverrides('hideAnimation');
+                  setTimeout(function(){
+                      if(container.childNodes.length > 0){
+                        let startTime = new Date().getTime();
+                        let currentTime;
+                        let endProgress = _this.clearanceDuration;
+                        let percentProgress = 0;
+                        let notifyOffsetHeight = notify.offsetHeight;
+                        let margin;
+                        let clearSpace = setInterval(function(){
+                          currentTime = new Date().getTime();
+                          percentProgress = (currentTime-startTime)/endProgress;
+                          notify.style.height = notifyOffsetHeight - Math.floor(notifyOffsetHeight * percentProgress) + 'px';
+                          margin = _this.notifySpacing - Math.floor(_this.notifySpacing * percentProgress);
+                          if(_this.vPosition === 'top'){
+                            notify.style.margin = '0 0 ' + margin + 'px 0';
+                          }else if(_this.vPosition === 'bottom'){
+                            notify.style.margin = margin + 'px 0 0 0';
+                          }
+                          if(currentTime-startTime >= endProgress){
+                            clearInterval(clearSpace);
+                          }
+                        }, 10);
+                      }
+                      setTimeout(function(){
+                        notify.parentNode.removeChild(notify);
+                        if(!container.hasChildNodes()){
+                          document.body.removeChild(container);
+                        }
+                      }, _this.clearanceDuration)
+                  }, _this.hideDuration);
+                };
+
+                let closeNotificationOnClick = function(){
+                  notify.removeEventListener('click', closeNotificationOnClick);
+                  let progressBar = notify.getElementsByClassName('progressbar')[0];
+                  if(progressBar){
+                      progressBar.style.display = 'none';
+                  }
+                  clearTimeout(showDuration);
+                  clearTimeout(hideDuration);
+                  notify.classList.add(userOverrides('hideClass'));
+                  notify.style.animation = userOverrides('hideAnimation');
+                  setTimeout(function(){
+                      if(container.childNodes.length > 0){
+                        let startTime = new Date().getTime();
+                        let currentTime;
+                        let endProgress = _this.clearanceDuration;
+                        let percentProgress = 0;
+                        let notifyOffsetHeight = notify.offsetHeight;
+                        let margin;
+                        let clearSpaceClick = setInterval(function(){
+                          currentTime = new Date().getTime();
+                          percentProgress = (currentTime-startTime)/endProgress;
+                          notify.style.height = notifyOffsetHeight - Math.floor(notifyOffsetHeight * percentProgress) + 'px';
+                          margin = _this.notifySpacing - Math.floor(_this.notifySpacing * percentProgress);
+                          if(_this.vPosition === 'top'){
+                            notify.style.margin = '0 0 ' + margin + 'px 0';
+                          }else if(_this.vPosition === 'bottom'){
+                            notify.style.margin = margin + 'px 0 0 0';
+                          }
+                          if(currentTime-startTime >= endProgress){
+                            clearInterval(clearSpaceClick);
+                          }
+                        }, 10);
+                      }
+                      setTimeout(function(){
+                        try {notify.parentNode.removeChild(notify);}
+                        catch(err) {}
+                        if(!container.hasChildNodes()){
+                          try {document.body.removeChild(container);}
+                          catch(err) {}
+                        }
+                      }, _this.clearanceDuration);
+                  }, _this.hideDuration);
+                };
 
                   if(this.vPosition === 'top'){
                     if(this.insertPosition === 'first'){
                         if(container.childNodes.length > 0){
                           container.insertBefore(notify, container.childNodes[0]);
-                          _notify = container.firstChild;
                           let startTime = new Date().getTime();
                           let currentTime;
                           let endProgress = _this.clearanceDuration;
@@ -269,7 +366,7 @@
                   }else if(this.vPosition === 'bottom'){
                     if(this.insertPosition === 'first'){
                       container.appendChild(notify);
-                      if(container.childNodes.length != 1){
+                      if(container.childNodes.length > 0){
                         let startTime = new Date().getTime();
                         let currentTime;
                         let endProgress = _this.clearanceDuration;
@@ -296,6 +393,9 @@
                     notify.classList.remove(userOverrides('showClass'));
                     notify.style.animation ='';
                     if(_this.autoHide === true){
+                      if(_this.hideOnClick === true){
+                        notify.addEventListener('click', closeNotificationOnClick);
+                      }
                       if(_this.autoHideInd === true){
                         let progressBar = notify.getElementsByClassName('progressbar')[0];
                         if( progressBar !== null){
@@ -318,55 +418,14 @@
                   }, this.showDuration + this.clearanceDuration);
 
                   if(this.autoHide === true){
-                    setTimeout(function(){
-                      setTimeout(function(){
-                        notify.classList.add(userOverrides('hideClass'));
-                        notify.style.animation = userOverrides('hideAnimation');
-                        setTimeout(function(){
-                            notify.style.animation ='';
-                            notify.style.opacity = '0';
-                            if(container.childNodes.length != 1){
-                              let startTime = new Date().getTime();
-                              let currentTime;
-                              let endProgress = _this.clearanceDuration;
-                              let percentProgress = 0;
-                              let notifyOffsetHeight = notify.offsetHeight;
-                              let margin;
-                              let clearSpace = setInterval(function(){
-                                currentTime = new Date().getTime();
-                                percentProgress = (currentTime-startTime)/endProgress;
-                                notify.style.height = notifyOffsetHeight - Math.floor(notifyOffsetHeight * percentProgress) + 'px';
-                                margin = _this.notifySpacing - Math.floor(_this.notifySpacing * percentProgress);
-                                if(_this.vPosition === 'top'){
-                                  notify.style.margin = '0 0 ' + margin + 'px 0';
-                                }else if(_this.vPosition === 'bottom'){
-                                  notify.style.margin = margin + 'px 0 0 0';
-                                }
-                                if(currentTime-startTime >= endProgress){
-                                  clearInterval(clearSpace);
-                                }
-                              }, 10);
-                            }
-                            setTimeout(function(){
-                              notify.parentNode.removeChild(notify);
-                              if(!container.hasChildNodes()){
-                                document.body.removeChild(container);
-                              }
-                            }, _this.clearanceDuration)
-                        }, _this.hideDuration);
-                      }, _this.showDuration);
-                    }, this.autoHideTime + this.clearanceDuration);
-                  }else{
-                    setTimeout(function(){
-                      let notifyCloseButton;
-                        notifyCloseButton = notify.getElementsByClassName('notifyclose');
-                        let closeNotifcation = function(){
+                    let autoHideDuration = setTimeout(function(){
+                      let showDuration = setTimeout(function(){
                           notify.classList.add(userOverrides('hideClass'));
                           notify.style.animation = userOverrides('hideAnimation');
-                          setTimeout(function(){
-                              notify.style.animation ='';
-                              notify.style.opacity = '0';
-                              if(container.childNodes.length != 1){
+                        let hideDuration = setTimeout(function(){
+                              //notify.style.animation ='';
+                              //notify.style.opacity = '0';
+                              if(container.childNodes.length > 0){
                                 let startTime = new Date().getTime();
                                 let currentTime;
                                 let endProgress = _this.clearanceDuration;
@@ -388,16 +447,21 @@
                                   }
                                 }, 10);
                               }
-                              setTimeout(function(){
-                                notifyCloseButton[0].removeEventListener('click', closeNotifcation);
-                                notify.parentNode.removeChild(notify);
+                              let removeNodes = setTimeout(function(){
+                                try {notify.parentNode.removeChild(notify);}
+                                catch(err) {}
                                 if(!container.hasChildNodes()){
-                                  document.body.removeChild(container);
+                                  try {document.body.removeChild(container);}
+                                  catch(err) {}
                                 }
-                              }, _this.clearanceDuration)
+                              }, _this.clearanceDuration);
                           }, _this.hideDuration);
-                        };
-                        notifyCloseButton[0].addEventListener('click', closeNotifcation);
+                        }, _this.showDuration);
+                      }, this.autoHideTime + this.clearanceDuration);
+                  }else{
+                    setTimeout(function(){
+                      let notifyCloseButton = notify.getElementsByClassName('notifyclose');
+                      notifyCloseButton[0].addEventListener('click', closeNotification);
                     }, this.showDuration + this.clearanceDuration);
                   }
 
@@ -406,7 +470,6 @@
             createContainer();
             //let _this = this;
             let txtMessage = formatMessage(message, type, style);
-
             let showClass = userOverrides('showClass');
             let showAnimation = userOverrides('showAnimation');
             let hideClass = userOverrides('hideClass');
