@@ -1,5 +1,5 @@
 ## BSNotify v0.1
-![](images/
+![](images/BSNotify_v0.1.png)
 ...still under construction do not use...
 
 
