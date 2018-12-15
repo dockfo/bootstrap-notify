@@ -1,4 +1,4 @@
-## BSNotify v0.1
+# BSNotify v0.1
 ![](images/BSNotify_v0.1.png)
 ...still under construction do not use...
 
