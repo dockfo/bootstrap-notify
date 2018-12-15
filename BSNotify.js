@@ -467,43 +467,14 @@
 
 
           }else if(this.notifyType === 'block'){
-            createContainer();
-            //let _this = this;
-            let txtMessage = formatMessage(message, type, style);
-            let showClass = userOverrides('showClass');
-            let showAnimation = userOverrides('showAnimation');
-            let hideClass = userOverrides('hideClass');
-            let hideAnimation = userOverrides('hideAnimation');
-            let notifyClass = userOverrides('notifyClass', type, style);
-            let notifySpacing = userOverrides('notifySpacing');
-            let notifyHeight = userOverrides('notifyHeight');
-            let clearanceClass = userOverrides('clearanceClass');
-            let clearanceAnimation = userOverrides('clearanceAnimation');
-            let container = document.getElementById('notifycontainer-' + this.vPosition);
-            let notify = document.createElement('div');
+        
+            // to do
 
-            if(container.hasChildNodes()){                                        // add pushDown class to first notification
-                notify.classList.add(clearanceClass);
-                notify.style.animation = clearanceAnimation;
-                setTimeout(function(){
-                  notify.classList.remove(clearanceClass);
-                  notify.classList.add(notifyClass, showClass);
-                  notify.style.animation = showAnimation;
-                  notify.style.margin = notifySpacing;
-                  notify.style.height = notifyHeight;
-                  notify.innerHTML = txtMessage;
-                }, this.clearanceDuration)
-            }else{
-                notify.classList.add(notifyClass, showClass);                     // first notification without pushDown class
-                notify.style.animation = showAnimation;
-                notify.style.margin = notifySpacing;
-                notify.style.height = notifyHeight;
-                notify.innerHTML = txtMessage;
-            }
-            container.appendChild(notify);
-
+          }else if(this.notifyType === 'popup'){
+         
+           // to do
+            
           }
-
     }
 
 
