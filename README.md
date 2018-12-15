@@ -1,4 +1,4 @@
-# boot-strap-notify
+## BSNotify v0.1
 
 ...still under construction do not use...
 
