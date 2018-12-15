@@ -59,7 +59,7 @@ For the show() method you have to pass 2 parameters : 'message', 'notifyType', a
 
 example:
 
-	notify.show('your message', 'warning')
+	notify.show({ title: 'my title', message :'my message'}, 'warning', 'default')
 	
 After instantiating the class you can modify the parameters with the method setParams({...}) as follows :
 	
