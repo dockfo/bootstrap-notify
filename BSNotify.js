@@ -1,5 +1,5 @@
 /**
-*  @package      BSNotify v 0.1
+*  @package      BSNotify v 0.4
  * @version      v 0.1
  * @link         https://github.com/dockfo/boot-strap-notify
 */
@@ -25,8 +25,8 @@
           _this.notifyHeight = 100                 // values : true for auto height or number in pixels -> height of the notification
           _this.notifySpacing = 10;                // values : pixels -> vertical spacing between notifications
           _this.autoHide = true;                   // values : true, false
-          _this.autoHideInd = true;                // values : true, false
-          _this.autoHideTime = 15000;              // values : time in microseconds -> display duration without the transitions time
+          _this.autoHideProgressLine = true;                // values : true, false
+          _this.displayTime = 15000;              // values : time in microseconds -> display duration without the transitions time
           _this.hideOnClick = true;                // values : true false
           _this.showTransition = 'slide';          // values : available show transitions -> 'slide', 'jelly', 'fade', 'dissolve', 'shrink', 'grow' ... feel free to add new ones ;-)
           _this.showDuration = 800;                // values : time in microseconds -> show transition duration
@@ -54,23 +54,23 @@
         //let _this = this;
         let userParams = function(params){                              // check user provided overrides
                           let userParams = {};
-                          let setupString = { notifyType            : [ 'card', 'block' ],
+                          let setupString = { notifyType            : [ 'card', 'block', 'dialog', 'popup' ],
                                               hPosition             : [ 'left', 'right' ],
                                               vPosition             : [ 'top', 'bottom' ],
                                               insertPosition        : [ 'first', 'last'],
                                               notifyHeight          : [ 'auto' ],                                // todo
                                               autoHide              : [ true, false ],
-                                              autoHideInd           : [ true, false ],
+                                              autoHideProgressLine  : [ true, false ],
+                                              hideOnClick           : [ true, false ],
                                               showTransition        : [ 'slide', 'jelly', 'wall', 'random'],
                                               hideTransition        : [ 'rocket', 'random' ],
-                                              notifyStyle           : [ 'default', 'random'],                    // todo
-                                              hideOnClick           : [ true, false ]
+                                              notifyStyle           : [ 'default', 'random']                     // todo
                                             };
                           let setupNumeric = {  hMargin         : { min : 10,   max : 20 },       // minimum and maximum limits for hMargin property
                                                 vMargin         : { min : 10,   max : 20 },       // minimum and maximum limits for vMargin property
                                                 notifyHeight    : { min : 50,  max : 200},        // minimum and maximum limits for notifyHeight property
                                                 notifySpacing   : { min : 5,    max : 15 },       // minimum and maximum limits for notifySpacing property
-                                                autoHideTime    : { min : 2000, max : 15000 },    // minimum and maximum limits for autoHideTime property
+                                                displayTime     : { min : 2000, max : 15000 },    // minimum and maximum limits for displayTime property
                                                 showDuration    : { min : 400,  max : 2000 },     // minimum and maximum limits for showDuration property
                                                 hideDuration    : { min : 400,  max : 2000 }      // minimum and maximum limits for hMahideDurationrgin property
                                               };
@@ -86,7 +86,7 @@
           };
 
         Object.keys(params = userParams(params)).forEach(function(param){
-          _this[param] = params[param];                     // ... and setting them
+          _this[param] = params[param];                                        // ... and setting them
         });
       }
     }
@@ -232,7 +232,7 @@
                                 html +=      '<div class="col-sm-12 message text-' + textColor + '">This is a \"' + _this.vPosition + ' ' + _this.hPosition + '\" notify with Bootstrap type : \"' + type + '\" and \"' + style + '\" style.</div>';
                                 html +=    '</div>';
 
-                            if(_this.autoHideInd === true && _this.autoHide === true){
+                            if(_this.autoHideProgressLine === true && _this.autoHide === true){
                                 html +=  '<div class="row">';
                                 html +=     '<div class="progressbar"></div>';
                                 html +=   '</div>';
@@ -396,12 +396,12 @@
                       if(_this.hideOnClick === true){
                         notify.addEventListener('click', closeNotificationOnClick);
                       }
-                      if(_this.autoHideInd === true){
+                      if(_this.autoHideProgressLine === true){
                         let progressBar = notify.getElementsByClassName('progressbar')[0];
                         if( progressBar !== null){
                           let startTime = new Date().getTime();
                           let currentTime;
-                          let endProgress = _this.autoHideTime;
+                          let endProgress = _this.displayTime;
                           let percentProgress = 0;
                           let displayProgress = setInterval(function(){
                                 currentTime = new Date().getTime();
@@ -457,7 +457,7 @@
                               }, _this.clearanceDuration);
                           }, _this.hideDuration);
                         }, _this.showDuration);
-                      }, this.autoHideTime + this.clearanceDuration);
+                      }, this.displayTime + this.clearanceDuration);
                   }else{
                     setTimeout(function(){
                       let notifyCloseButton = notify.getElementsByClassName('notifyclose');
@@ -467,14 +467,43 @@
 
 
           }else if(this.notifyType === 'block'){
-        
-            // to do
+            createContainer();
+            //let _this = this;
+            let txtMessage = formatMessage(message, type, style);
+            let showClass = userOverrides('showClass');
+            let showAnimation = userOverrides('showAnimation');
+            let hideClass = userOverrides('hideClass');
+            let hideAnimation = userOverrides('hideAnimation');
+            let notifyClass = userOverrides('notifyClass', type, style);
+            let notifySpacing = userOverrides('notifySpacing');
+            let notifyHeight = userOverrides('notifyHeight');
+            let clearanceClass = userOverrides('clearanceClass');
+            let clearanceAnimation = userOverrides('clearanceAnimation');
+            let container = document.getElementById('notifycontainer-' + this.vPosition);
+            let notify = document.createElement('div');
 
-          }else if(this.notifyType === 'popup'){
-         
-           // to do
-            
+            if(container.hasChildNodes()){                                        // add pushDown class to first notification
+                notify.classList.add(clearanceClass);
+                notify.style.animation = clearanceAnimation;
+                setTimeout(function(){
+                  notify.classList.remove(clearanceClass);
+                  notify.classList.add(notifyClass, showClass);
+                  notify.style.animation = showAnimation;
+                  notify.style.margin = notifySpacing;
+                  notify.style.height = notifyHeight;
+                  notify.innerHTML = txtMessage;
+                }, this.clearanceDuration)
+            }else{
+                notify.classList.add(notifyClass, showClass);                     // first notification without pushDown class
+                notify.style.animation = showAnimation;
+                notify.style.margin = notifySpacing;
+                notify.style.height = notifyHeight;
+                notify.innerHTML = txtMessage;
+            }
+            container.appendChild(notify);
+
           }
+
     }
 
 
