@@ -36,7 +36,7 @@
           _this.clearanceDuration = 200;
           _this.progressBarToZero = true;
           _this.randomTransition = null;
-          _this.logInfo = true;
+          _this.logInfo = false;
           // setting user definable properties
           _this.setParams(params);
       };
@@ -426,10 +426,10 @@
                       }
                       setTimeout(function(){
                         try {notify.parentNode.removeChild(notify);}
-                        catch(err) {(_this.logInfo) ? console.info('BSNotify v0.1 - Notify allready deleted.') : false;}
+                        catch(err) {}
                         if(!container.hasChildNodes()){
                           try {document.body.removeChild(container);}
-                          catch(err) {(_this.logInfo) ? console.info('BSNotify v0.1 - Container allready deleted.') : false;};
+                          catch(err) {};
                         }
                       }, _this.clearanceDuration);
                   }, _this.hideDuration);
@@ -549,10 +549,10 @@
                               }
                               let removeNodes = setTimeout(function(){
                                 try {notify.parentNode.removeChild(notify);}
-                                catch(err) {(_this.logInfo) ? console.info('BSNotify v0.1 - Notify allready deleted.') : false;}
+                                catch(err) {}
                                 if(!container.hasChildNodes()){
                                   try {document.body.removeChild(container);}
-                                  catch(err) {(_this.logInfo) ? console.info('BSNotify v0.1 - Container allready deleted.') : false;}
+                                  catch(err) {}
                                 }
                               }, _this.clearanceDuration);
                           }, _this.hideDuration);
