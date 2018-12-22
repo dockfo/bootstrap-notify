@@ -4,60 +4,101 @@
  * @link         https://github.com/dockfo/boot-strap-notify
 */
 
-.icon-card{	color:rgba(255,255,255,0.3);
-						position:relative;
-						top:-28px;
+.icon-card{	color:rgba(255,255,255,0.1);
+						position:absolute;
+						top:-20px;
 						left:-20px;
-						font-size:10rem;}
+						z-index:-1;}
 
 .icon-block{	color:rgba(255,255,255,0.3);
-							position:relative;
-							top:-21px;
-							left:-20px;
-							font-size:6rem;}
+							position:relative;}
+
 .progressbar{	background:rgb(230,230,230);
 							height:3px;
-							opacity:1;
+							position:absolute;
+							bottom:0px;
+							opacity: 0;
 							transition: opacity 500ms;}
-.progressbarfade{	opacity:0;}
+
+.progressbarfadeout{	opacity:0;}
+.progressbarfadein{	opacity:1;}
+
+.notifyclose{	font-size:2rem;
+							color:white!important;
+							opacity:1!important;
+							text-shadow:1px 1px 1px rgba(0,0,0,0.4)!important;
+							transition: all 300ms ease-in-out;}
+
+.notifyclose:hover{	color:tomato!important;
+										opacity:0.8!important;
+										text-shadow:1px 1px 1px rgba(0,0,0,0.4)!important;
+										transform:rotate(180deg);}
+
+.notifyclose:focus{outline:none;}
+
+.message{	position:absolute;
+					top:30px;
+					text-shadow:1px 1px 1px rgba(0,0,0,0.4);
+					font-size:0.97rem;}
+
+.title{	position:absolute;
+				width:100%;
+				top:0px;
+				left:0px;
+				color:white;
+				text-align:center;
+				text-shadow:1px 1px 1px rgba(0,0,0,0.4);
+				font-size:1.1rem;
+				font-weight:bold;}
 
 /* NOTIFICATION CARD BASIC CLASS */
-			.notifycontainer{	z-index:9999;
+			.notifycontainer{	z-index:1000;
 												width:400px;
 												height:auto;
 												position:fixed;
 												overflow:visible;
 												background:rgba(0,0,0,0);}
-			.notify-primary{	position:relative;
+
+			.notify-primary{	z-index:-1;
+												position:relative;
 												background:#007bff;
-												box-shadow:	0 3px 7px rgba(0,0,0,0.3);
+												box-shadow:	0 20px 15px -15px rgba(0,0,0,0.5);
 												max-width:400px;
 												overflow:hidden;
-												border-radius:5px;}
-			.notify-success{	position:relative;
+												border-radius:5px;
+												background-image: linear-gradient(to bottom, #0056b2, #007bff);}
+			.notify-success{	z-index:-1;
+												position:relative;
 												background:#28a745;
-												box-shadow: 0 3px 7px rgba(0,0,0,0.3);
+												box-shadow: 0 20px 15px -15px rgba(0,0,0,0.5);
 												overflow:hidden;
 												max-width:400px;
-												border-radius:5px;}
-			.notify-info{	position:relative;
+												border-radius:5px;
+												background-image: linear-gradient(to bottom, #177f2f, #28a745);}
+			.notify-info{	z-index:-1;
+										position:relative;
 										background:#17a2b8;
-										box-shadow: 0 3px 7px rgba(0,0,0,0.3);
+										box-shadow: 0 20px 15px -15px rgba(0,0,0,0.5);
 										overflow:hidden;
 										max-width:400px;
-										border-radius:5px;}
-			.notify-warning{	position:relative;
+										border-radius:5px;
+										background-image: linear-gradient(to bottom, #0b8498, #17a2b8);}
+			.notify-warning{	z-index:-1;
+												position:relative;
 												background:#ffc107;
-												box-shadow: 0 3px 7px rgba(0,0,0,0.3);
+												box-shadow: 0 20px 15px -15px rgba(0,0,0,0.5);
 												overflow:hidden;
 												max-width:400px;
-												border-radius:5px;}
-			.notify-danger{	position:relative;
+												border-radius:5px;
+												background-image: linear-gradient(to bottom, #d39e00, #ffc107);}
+			.notify-danger{	z-index:-1;
+											position:relative;
 											background:#dc3545;
-											box-shadow: 0 3px 7px rgba(0,0,0,0.3);
+											box-shadow: 0 20px 15px -15px rgba(0,0,0,0.5);
 											overflow:hidden;
 											max-width:400px;
-											border-radius:5px;}
+											border-radius:5px;
+											background-image: linear-gradient(to bottom, #961824, #dc3545);}
 /* END NOTIFICATION CARD BASIC CLASS */
 
 /* NOTIFY CARD CLASSES */
