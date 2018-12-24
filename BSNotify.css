@@ -23,7 +23,10 @@
 .progressbarfadeout{	opacity:0;}
 .progressbarfadein{	opacity:1;}
 
+.marginfix{margin:0 0 4px 0;}
+
 .notifyclose{	font-size:2rem;
+							margin: 0 0 -5px 0;
 							color:white!important;
 							opacity:1!important;
 							text-shadow:1px 1px 1px rgba(0,0,0,0.4)!important;
@@ -36,10 +39,11 @@
 
 .notifyclose:focus{outline:none;}
 
-.message{	position:absolute;
-					top:30px;
+.message{	/*position:absolute;
+					top:30px;*/
 					text-shadow:1px 1px 1px rgba(0,0,0,0.4);
-					font-size:0.97rem;}
+					font-size:0.97rem;
+					margin-bottom:10px;}
 
 .title{	position:absolute;
 				width:100%;
