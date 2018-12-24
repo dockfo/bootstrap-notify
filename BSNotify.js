@@ -26,7 +26,7 @@
           _this.notifySpacing = 10;                // values : pixels -> vertical spacing between notifications
           _this.autoHide = true;                   // values : true, false
           _this.autoHideProgressLine = true;       // values : true, false
-          _this.displayTime = 15000;               // values : time in microseconds -> display duration without the transitions time
+          _this.displayTime = 150000;               // values : time in microseconds -> display duration without the transitions time
           _this.hideOnClick = true;                // values : true false
           _this.showTransition = 'slide';          // values : available show transitions -> 'slide', 'jelly', 'fade', 'dissolve', 'shrink', 'grow' ... feel free to add new ones ;-)
           _this.showDuration = 800;                // values : time in microseconds -> show transition duration
@@ -36,6 +36,7 @@
           _this.clearanceDuration = 200;
           _this.progressBarToZero = true;
           _this.randomTransition = null;
+          _this.autoNotifyHeight = null;
           _this.logInfo = false;
           // setting user definable properties
           _this.setParams(params);
@@ -85,7 +86,7 @@
                                                 vMargin         : { min : 10,   max : 20 },       // minimum and maximum limits for vMargin property
                                                 notifyHeight    : { min : 50,   max : 200},       // minimum and maximum limits for notifyHeight property
                                                 notifySpacing   : { min : 5,    max : 15 },       // minimum and maximum limits for notifySpacing property
-                                                displayTime     : { min : 2000, max : 15000 },    // minimum and maximum limits for displayTime property
+                                                displayTime     : { min : 2000, max : 150000 },    // minimum and maximum limits for displayTime property
                                                 showDuration    : { min : 400,  max : 2000 },     // minimum and maximum limits for showDuration property
                                                 hideDuration    : { min : 400,  max : 2000 }      // minimum and maximum limits for hMahideDurationrgin property
                                               };
@@ -130,167 +131,177 @@
                             };
 
           let userOverrides = function(param, data = null){
-            let checkNotifyType = function(type){
-                                    let notify = ['primary', 'success', 'info', 'warning', 'danger'];
-                                    if(notify.includes(type)){
-                                      return type;
-                                    }else{
-                                      console.warn('BSNotify v0.1 - type' + ' : \'' + type + '\' - Notify type of \'' + type + '\' does not exists.');
-                                      return 'danger';
+                                let checkNotifyType = function(type){
+                                                        let notify = ['primary', 'success', 'info', 'warning', 'danger'];
+                                                        if(notify.includes(type)){
+                                                          return type;
+                                                        }else{
+                                                          console.warn('BSNotify v0.1 - type' + ' : \'' + type + '\' - Notify type of \'' + type + '\' does not exists.');
+                                                          return 'danger';
+                                                        }
+                                                      };
+
+                                let selectRandomTransition = function(type){
+                                                              let transitionsShow = _this.getPermitedValues('showTransition');
+                                                              let transitionsHide = _this.getPermitedValues('hideTransition');
+                                                              let transition;
+                                                              let transitionSelect;
+                                                                  if(type === 'show'){
+                                                                    _this.randomTransition = transitionsShow[Math.floor(Math.random() * (transitionsShow.length - 1))];
+                                                                  }else if(type === 'hide'){
+                                                                    _this.randomTransition = transitionsHide[Math.floor(Math.random() * (transitionsHide.length - 1))];
+                                                                  }
+                                                            }
+
+                                switch(param){
+                                  case 'showClass' :
+                                      if(_this.notifyType === 'card'){
+                                        if(_this.showTransition === 'random'){
+                                          selectRandomTransition('show')
+                                          return ('notify-show-' + _this.randomTransition);
+                                        }else{
+                                            return ('notify-show-' + _this.showTransition);
+                                        }
+                                      }else if(_this.notifyType === 'block'){
+                                        return ('notify-block-show-' + _this.showTransition);
+                                      }
+                                  case 'hideClass' :
+                                      if(_this.notifyType === 'card'){
+                                        if(_this.hideTransition === 'random'){
+                                          selectRandomTransition('hide')
+                                          return ('notify-hide-' + _this.randomTransition);
+                                        }else{
+                                          return ('notify-hide-' + _this.hideTransition);
+                                        }
+                                      }else if(_this.notifyType === 'block'){
+                                        return ('notify-block-hide-' + _this.hideTransition);
+                                      }
+                                  case 'showAnimation' :
+                                      if(_this.notifyType === 'card'){
+                                        if(_this.showTransition === 'random'){
+                                          return (_this.randomTransition + "-" + _this.hPosition + ' ' + _this.showDuration + 'ms linear forwards');
+                                        }else{
+                                          return (_this.showTransition + "-" + _this.hPosition + ' ' + _this.showDuration + 'ms linear forwards');
+                                        }
+                                      }else if(_this.notifyType === 'block'){
+                                        return (_this.showTransition + "-" + _this.vPosition + ' ' + _this.showDuration + 'ms linear forwards');
+                                      }
+                                  case 'hideAnimation' :
+                                      if(_this.notifyType === 'card'){
+                                        if(_this.hideTransition === 'random'){
+                                          return (_this.randomTransition + "-" + _this.hPosition + ' ' + _this.hideDuration + 'ms linear forwards');
+                                        }else{
+                                          return (_this.hideTransition + "-" + _this.hPosition + ' ' + _this.hideDuration + 'ms linear forwards');
+                                        }
+                                      }else if(_this.notifyType === 'block'){
+                                        return (_this.hideTransition + "-" + _this.vPosition + ' ' + _this.hideDuration + 'ms linear forwards');
+                                      }
+                                  case 'notifyClass' :
+                                      if(_this.notifyType === 'card'){
+                                        return ('notify-' + checkNotifyType(data));
+                                      }else if(_this.notifyType === 'block'){
+                                        return ('notify-block-' + checkNotifyType(data));
+                                      }
+                                  case 'notifySpacing' :
+                                      if(_this.vPosition === 'top'){
+                                        return ('0 0 ' + _this.notifySpacing + 'px 0');
+                                      }else{
+                                        return (_this.notifySpacing + 'px 0 0 0');
+                                      }
+                                  case 'notifyHeight' :
+                                      console.log(_this.notifyHeight, _this.autoNotifyHeight)
+                                      if(_this.notifyType === 'card'){
+                                        if(_this.notifyHeight === 'auto'){
+                                          console.log('auto');
+                                          getNotifyHeight();
+                                          return _this.autoNotifyHeight;
+                                        }else if(typeof(_this.notifyHeight) === 'number'){
+                                          console.log('number');
+                                          return _this.notifyHeight;
+                                        }
+                                      }else if(_this.notifyType === 'block'){
+                                        return ('60px');
+                                      }
+                                    break;
+                                  default:
+                                    console.warn('BSNotify v0.1 - param' + ' : \'' + param + '\' - Parameter does not exists.');    // warning in console in case of bad value provided
+                                    return false;
+                                }
+                              };
+
+          let getNotifyHeight = function (){
+                                  let innerHtmlHeight  = '<div class="container-fluid">';
+                                      innerHtmlHeight +=     '<div class="title">&nbsp;</div>';
+                                      innerHtmlHeight +=   '<div class="row">';
+                                      innerHtmlHeight +=     '<div class="col-sm-12 marginfix">&nbsp;</div>';
+                                      innerHtmlHeight +=   '</div>';
+                                      innerHtmlHeight +=   '<div class="row">';
+                                      innerHtmlHeight +=      '<div class="col-sm-12 message">' + getMessageText().message + '</div>';
+                                      innerHtmlHeight +=    '</div>';
+                                      innerHtmlHeight +=  '</div>';
+                                      let container = document.createElement('div');
+                                      container.setAttribute('id','container');
+                                      container.style.width = '400px';
+                                      document.body.appendChild(container);
+
+                                      let notify = document.createElement('div');
+                                      notify.setAttribute('id','notify');
+                                      notify.innerHTML = innerHtmlHeight;
+                                      container.appendChild(notify);
+
+                                      _this.autoNotifyHeight = document.getElementById('notify').offsetHeight;
+
+                                      container.outerHTML = "";
+
+                                        console.log(_this.autoNotifyHeight);
                                     }
-                                };
+          let getMessageText = function(){
+                              let notifyTitle;
+                              let notifyMessage;
+                              let notifyAlign;
+                              let titleDefault = { primary : 'Notice', success : 'Success', info : 'Info', warning : 'Warning', danger : 'Danger' };
+                              let alignDefault = ['left', 'right', 'center', 'justify'];
 
-            let selectRandomTransition = function(type){
-              let transitionsShow = _this.getPermitedValues('showTransition');
-              let transitionsHide = _this.getPermitedValues('hideTransition');
-              let transition;
-              let transitionSelect;
-                  if(type === 'show'){
-                    _this.randomTransition = transitionsShow[Math.floor(Math.random() * (transitionsShow.length - 1))];
-                  }else if(type === 'hide'){
-                    _this.randomTransition = transitionsHide[Math.floor(Math.random() * (transitionsHide.length - 1))];
-                  }
-                }
-
-            switch(param){
-              case 'showClass' :
-                  if(_this.notifyType === 'card'){
-                    if(_this.showTransition === 'random'){
-                      selectRandomTransition('show')
-                      return ('notify-show-' + _this.randomTransition);
-                    }else{
-                        return ('notify-show-' + _this.showTransition);
-                    }
-                  }else if(_this.notifyType === 'block'){
-                    return ('notify-block-show-' + _this.showTransition);
-                  }
-              case 'hideClass' :
-                  if(_this.notifyType === 'card'){
-                    if(_this.hideTransition === 'random'){
-                      selectRandomTransition('hide')
-                      return ('notify-hide-' + _this.randomTransition);
-                    }else{
-                      return ('notify-hide-' + _this.hideTransition);
-                    }
-                  }else if(_this.notifyType === 'block'){
-                    return ('notify-block-hide-' + _this.hideTransition);
-                  }
-              case 'showAnimation' :
-                  if(_this.notifyType === 'card'){
-                    if(_this.showTransition === 'random'){
-                      return (_this.randomTransition + "-" + _this.hPosition + ' ' + _this.showDuration + 'ms linear forwards');
-                    }else{
-                      return (_this.showTransition + "-" + _this.hPosition + ' ' + _this.showDuration + 'ms linear forwards');
-                    }
-                  }else if(_this.notifyType === 'block'){
-                    return (_this.showTransition + "-" + _this.vPosition + ' ' + _this.showDuration + 'ms linear forwards');
-                  }
-              case 'hideAnimation' :
-                  if(_this.notifyType === 'card'){
-                    if(_this.hideTransition === 'random'){
-                      return (_this.randomTransition + "-" + _this.hPosition + ' ' + _this.hideDuration + 'ms linear forwards');
-                    }else{
-                      return (_this.hideTransition + "-" + _this.hPosition + ' ' + _this.hideDuration + 'ms linear forwards');
-                    }
-                  }else if(_this.notifyType === 'block'){
-                    return (_this.hideTransition + "-" + _this.vPosition + ' ' + _this.hideDuration + 'ms linear forwards');
-                  }
-              case 'notifyClass' :
-                  if(_this.notifyType === 'card'){
-                    return ('notify-' + checkNotifyType(data));
-                  }else if(_this.notifyType === 'block'){
-                    return ('notify-block-' + checkNotifyType(data));
-                  }
-              case 'notifySpacing' :
-                  if(_this.vPosition === 'top'){
-                    return ('0 0 ' + _this.notifySpacing + 'px 0');
-                  }else{
-                    return (_this.notifySpacing + 'px 0 0 0');
-                  }
-              case 'notifyHeight' :
-                  if(_this.notifyType === 'card'){
-                    if(_this.notifyHeight === 'auto'){
-                      return ('auto');
-                    }else if(typeof(_this.notifyHeight) === 'number'){
-                      return (_this.notifyHeight + 'px');
-                    }
-                  }else if(_this.notifyType === 'block'){
-                    return ('60px');
-                  }
-                break;
-              default:
-                console.warn('BSNotify v0.1 - param' + ' : \'' + param + '\' - Parameter does not exists.');    // warning in console in case of bad value provided
-                return false;
-            }
-          };
-
-          let formatMessage = function(userMessage, type = 'danger', style = 'default'){       // creating the message displayed inside notification div depending on notification type (primary, warning, danger etc.)
-                            let icon;
-                            let iconNotifyType;
-                            let iconClose;
-                            let textColor;
-                            let notifyTitle;
-                            let notifyMessage;
-                            let notifyAlign;
-                            let titleDefault = {  primary : 'Primary',
-                                                  success : 'Success',
-                                                  info    : 'Info',
-                                                  warning : 'Warning',
-                                                  danger  : 'Danger'};
-                            let alignDefault = ['left', 'right', 'center', 'justify'];
-                            (_this.notifyType === 'card')? iconNotifyType = 'icon-card' : ((_this.notifyType === 'block')? iconNotifyType = 'icon-block' : false );
-                            (_this.hPosition === 'left')? iconClose = 'float-right' : iconClose = 'float-left';
-                            textColor = (type === 'primary' || type === 'success' || type === 'info' || type === 'danger')? 'white' : 'dark';
-                            switch(type){
-                              case 'primary':
-                                  icon = 'glyphicon glyphicon-plus-sign';
-                                break;
-                              case 'success':
-                                  icon = '  glyphicon glyphicon-ok-sign';
-                                break;
-                              case 'info':
-                                  icon = 'glyphicon glyphicon-info-sign';
-                                break;
-                              case 'warning':
-                                  icon = 'glyphicon glyphicon-question-sign';
-                                break;
-                              case 'danger':
-                                  icon = 'glyphicon glyphicon-exclamation-sign';
-                                break;
-                            }
-                            //console.log(typeof(userMessage), type, style);
-                            if(typeof(userMessage) === "object"){
-                              if(userMessage.title){
-                                notifyTitle = userMessage.title;
-                              }else{
-                                notifyTitle = titleDefault[type];
-                                //console.log(typeof(userMessage, userMessage));
-                                //console.warn('BSNotify v0.4 - Default title');
-                              }
-                              if(userMessage.message){
-                                notifyMessage = userMessage.message;
-                              }else{
-                                notifyMessage = 'This is a \"' + _this.vPosition + ' ' + _this.hPosition + '\" notify with Bootstrap type : \"' + type + '\" and \"' + style + '\" style.';
-                                //console.warn('BSNotify v0.4 - Default title');
-                              }
-                              if(userMessage.align){
-                                if(alignDefault.includes(userMessage.align)){
-                                  notifyAlign = userMessage.align;
+                              if(typeof(message) === "object"){
+                                if(message.title){
+                                  notifyTitle = message.title;
+                                }else{
+                                  notifyTitle = titleDefault[type];
+                                  //console.log(typeof(message, message));
+                                  //console.warn('BSNotify v0.4 - Default title');
+                                }
+                                if(message.message){
+                                  notifyMessage = message.message;
+                                }else{
+                                  notifyMessage = 'This is a \"' + _this.vPosition + ' ' + _this.hPosition + '\" notify with Bootstrap type : \"' + type + '\" and \"' + style + '\" style.';
+                                  //console.warn('BSNotify v0.4 - Default title');
+                                }
+                                if(message.align){
+                                  if(alignDefault.includes(message.align)){
+                                    notifyAlign = message.align;
+                                  }else{
+                                    notifyAlign = 'left';
+                                    //console.warn('BSNotify v0.4 - Default align');
+                                  }
                                 }else{
                                   notifyAlign = 'left';
                                   //console.warn('BSNotify v0.4 - Default align');
                                 }
-                              }else{
-                                notifyAlign = 'left';
-                                //console.warn('BSNotify v0.4 - Default align');
-                              }
-                            }else if(typeof(userMessage) === "string"){
-                              if(userMessage !== ''){
-                                notifyMessage = userMessage;
-                                notifyTitle = titleDefault[type];
-                                notifyAlign = 'left';
-                                //console.warn('BSNotify v0.4 - Default title');
-                                //console.warn('BSNotify v0.4 - Default align');
+                              }else if(typeof(message) === "string"){
+                                if(message !== ''){
+                                  notifyMessage = message;
+                                  notifyTitle = titleDefault[type];
+                                  notifyAlign = 'left';
+                                  //console.warn('BSNotify v0.4 - Default title');
+                                  //console.warn('BSNotify v0.4 - Default align');
+                                }else{
+                                  notifyMessage = 'This is a \"' + _this.vPosition + ' ' + _this.hPosition + '\" notify with Bootstrap type : \"' + type + '\" and \"' + style + '\" style.';
+                                  notifyTitle = titleDefault[type];
+                                  notifyAlign = 'left';
+                                  //console.warn('BSNotify v0.4 - Default message');
+                                  //console.warn('BSNotify v0.4 - Default title');
+                                  //console.warn('BSNotify v0.4 - Default align');
+                                }
                               }else{
                                 notifyMessage = 'This is a \"' + _this.vPosition + ' ' + _this.hPosition + '\" notify with Bootstrap type : \"' + type + '\" and \"' + style + '\" style.';
                                 notifyTitle = titleDefault[type];
@@ -299,39 +310,57 @@
                                 //console.warn('BSNotify v0.4 - Default title');
                                 //console.warn('BSNotify v0.4 - Default align');
                               }
-                            }else{
-                              notifyMessage = 'This is a \"' + _this.vPosition + ' ' + _this.hPosition + '\" notify with Bootstrap type : \"' + type + '\" and \"' + style + '\" style.';
-                              notifyTitle = titleDefault[type];
-                              notifyAlign = 'left';
-                              //console.warn('BSNotify v0.4 - Default message');
-                              //console.warn('BSNotify v0.4 - Default title');
-                              //console.warn('BSNotify v0.4 - Default align');
-                            }
-
-                            let html  = '<div class="container-fluid">';
-                                html +=   '<i class="' + icon + ' ' + iconNotifyType +'" style="font-size:' + _this.notifyHeight * 150/100 + 'px"></i>';
-                                html +=     '<div class="title">' + notifyTitle + '</div>';
-
-                            if(_this.autoHide === false){
-                                html +=   '<div class="row">';
-                                html +=     '<div class="col-sm-12"><button type="button" class="close notifyclose ' + iconClose + '" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>';
-                                html +=   '</div>';
-                            }
-
-                                html +=   '<div class="row">';
-                                html +=      '<div class="col-sm-12 message text-' + textColor + '" align="' + notifyAlign + '">' + notifyMessage + '</div>';
-                                html +=    '</div>';
-
-                            if(_this.autoHideProgressLine === true && _this.autoHide === true){
-                                html +=  '<div class="row">';
-                                html +=     '<div class="progressbar"></div>';
-                                html +=   '</div>';
+                              return {title : notifyTitle, message : notifyMessage, align : notifyAlign};
                             };
 
-                            html +=  '</div>';
+          let formatMessage = function(){       // creating the message displayed inside notification div depending on notification type (primary, warning, danger etc.)
+                                let icon;
+                                let iconNotifyType = (_this.notifyType === 'card')? 'icon-card' : ((_this.notifyType === 'block')? 'icon-block' : false );
+                                let iconClose = (_this.hPosition === 'left')? 'float-right' : 'float-left';
+                                let textColor = (type === 'primary' || type === 'success' || type === 'info' || type === 'danger')? 'white' : 'dark';
+                                let messageText = getMessageText();
 
-                            return html;                                                                    // returns html string
-                          }
+                                switch(type){
+                                  case 'primary':
+                                      icon = 'glyphicon glyphicon-plus-sign';
+                                    break;
+                                  case 'success':
+                                      icon = '  glyphicon glyphicon-ok-sign';
+                                    break;
+                                  case 'info':
+                                      icon = 'glyphicon glyphicon-info-sign';
+                                    break;
+                                  case 'warning':
+                                      icon = 'glyphicon glyphicon-question-sign';
+                                    break;
+                                  case 'danger':
+                                      icon = 'glyphicon glyphicon-exclamation-sign';
+                                    break;
+                                }
+
+                                let innerHtml  = '<div class="container-fluid">';
+                                    innerHtml +=   '<i class="' + icon + ' ' + iconNotifyType +'" style="font-size:' + _this.notifyHeight * 150/100 + 'px"></i>';
+                                    innerHtml +=     '<div class="title">' + messageText.title + '</div>';
+                                  if(_this.autoHide === false){
+                                    innerHtml +=   '<div class="row">';
+                                    innerHtml +=     '<div class="col-sm-12"><button type="button" class="close notifyclose ' + iconClose + '" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>';
+                                    innerHtml +=   '</div>';
+                                  }else{
+                                    innerHtml +=   '<div class="row">';
+                                    innerHtml +=     '<div class="col-sm-12 marginfix">&nbsp;</div>';
+                                    innerHtml +=   '</div>';
+                                  }
+                                    innerHtml +=   '<div class="row">';
+                                    innerHtml +=      '<div class="col-sm-12 message text-' + textColor + '" align="' + messageText.align + '">' + messageText.message + '</div>';
+                                    innerHtml +=    '</div>';
+                                  if(_this.autoHideProgressLine === true && _this.autoHide === true){
+                                    innerHtml +=  '<div class="row">';
+                                    innerHtml +=     '<div class="progressbar"></div>';
+                                    innerHtml +=   '</div>';
+                                  };
+                                    innerHtml +=  '</div>';
+                                return innerHtml;                                                                    // returns html string
+                              }
 
           if(_this.notifyType === 'card'){
             // initialize vars
@@ -342,15 +371,18 @@
             let notifyClass = userOverrides('notifyClass', type, style);
             let notifySpacing = userOverrides('notifySpacing');
             let notifyHeight = userOverrides('notifyHeight');
+    console.log(notifyHeight);
                 createContainer();
-                let txtMessage = formatMessage(message, type, style);
+                let txtMessage = formatMessage();
                 let container = document.getElementById('notifycontainer-' + _this.vPosition + _this.hPosition);
                 let notify = document.createElement('div');
                 let addShowTransition = function(){
                           notify.classList.add(notifyClass, showClass);
                           notify.style.animation = showAnimation;
                           notify.style.margin = notifySpacing;
-                          notify.style.height = notifyHeight;
+                          notify.style.height = notifyHeight + 'px';
+                          console.log(notifyHeight);
+
                           notify.innerHTML = txtMessage;
                   }
                 let closeNotification = function(){
@@ -446,7 +478,8 @@
                           let push = setInterval(function(){
                             currentTime = new Date().getTime();
                             percentProgress = (currentTime-startTime)/endProgress;
-                            notify.style.height = Math.floor(_this.notifyHeight * percentProgress) + 'px';
+                            notify.style.height = Math.floor(notifyHeight * percentProgress) + 'px';
+    //console.log(notifyHeight);
                             notify.style.margin = '0 0 ' + Math.floor(_this.notifySpacing * percentProgress) + 'px 0';
                             if(currentTime-startTime >= endProgress){
                               clearInterval(push);
@@ -472,7 +505,7 @@
                         let push = setInterval(function(){
                           currentTime = new Date().getTime();
                           percentProgress = (currentTime-startTime)/endProgress;
-                          notify.style.height = Math.floor(_this.notifyHeight * percentProgress) + 'px';
+                          notify.style.height = Math.floor(notifyHeight * percentProgress) + 'px';
                           notify.style.margin = Math.floor(_this.notifySpacing * percentProgress) + 'px 0 0 0';
                           if(currentTime-startTime >= endProgress){
                             clearInterval(push);
@@ -569,7 +602,7 @@
           }else if(_this.notifyType === 'block'){
             createContainer();
             //let _this = _this;
-            let txtMessage = formatMessage(message, type, style);
+            let txtMessage = formatMessage();
             let showClass = userOverrides('showClass');
             let showAnimation = userOverrides('showAnimation');
             let hideClass = userOverrides('hideClass');
