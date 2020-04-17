@@ -3,8 +3,6 @@
 
 ![](images/BSNotify_v0.1.png)
 
-See it in action at https://www.dockfo.gr
-
 Simple class for displaying notification messages written in vanilla JavaScript.
 
 How to use.
