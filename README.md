@@ -5,7 +5,7 @@
 
 Simple class for displaying notification messages written in vanilla JavaScript.
 
-See it in action at htp://www.dockfo.gr
+See it in action at http://www.dockfo.gr
 How to use.
 
 Instantiate the Notify class with notify = new Notify() and off you go. To display notifications call the method notify.show(). You can also override the class default parameters which are :
